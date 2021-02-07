@@ -3,26 +3,41 @@
 #include "main.h"
 
 int main(int argc, char *argv[]) {
-    int i = 0xf1;
+    // Set i to a literal value
+    unsigned int i = 0x0f0f0f0f;
 
-    printf("Original:  ");
+    printf("Original:\t");
+    // Print i in binary
     bin_print(i);
-    printf("\n");
+    // End line
+    printf("\t%x\t%u\n\n", i, i);
 
-    for (int j = 0; j < 40; j++) {
-        printf("%3d << %2d: ", i, j);
-        bin_print(i << j);
+    // 32
+    int j = (sizeof(unsigned int) * 8) - 1;
+
+    for (; j >= 0; j--) {
+        // 1 shifted left j times
+        bin_print(1 << j);
         printf("\n");
+
+        // i
+        bin_print(i);
+        printf("\n-------------------------------- &\n");
+
+        // (1 shifted left j times) bitwise logical and i
+        bin_print((1 << j) & i);
+        printf("\n\n");
     }
 
     return 0;
 }
 
-void bin_print(int i) {
+void bin_print(unsigned int i) {
     // Number of bis in an integer.
-    int j = (sizeof(int) * 8) - 1;
+    int j = (sizeof(unsigned int) * 8) - 1;
 
     for (; j >= 0; j--) {
+        // Pick out the j^th bit of i
         int k = ((1 << j) & i) ? 1 : 0;
         printf("%d", k);
     }
