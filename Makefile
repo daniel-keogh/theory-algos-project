@@ -1,6 +1,6 @@
 # Reference: https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
 CC=gcc
-CFLAGS=
+CFLAGS=-std=c11
 
 # Executable
 EXEC=sha512
@@ -11,7 +11,7 @@ ODIR=obj
 
 # Object files
 OBJS=$(patsubst %,$(ODIR)/%,$(_OBJS))
-_OBJS=main.o
+_OBJS=main.o sha512.o
 
 all: init $(EXEC)
 
