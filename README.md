@@ -12,8 +12,15 @@ You can compile and run the program as follows:
 
 ```sh
 $ make
-$ ./sha512 FILE [options]
+$ ./sha512 [options]
 ```
+
+### Options
+
+| Option | Description |
+| -------- | ----------- |
+| `-h, --help` | Prints some help text. |
+| `-f, --file <file>` | Path to the input file. |
 
 ### Testing
 
