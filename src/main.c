@@ -12,9 +12,8 @@ int main(int argc, char *argv[])
     char* filename = NULL;
     parseOpts(argc, argv, &filename);
 
-    puts(filename);
-
-    // compute(filename);
+    char* result = compute(filename);
+    puts(result);
 
     return EXIT_SUCCESS;
 }
@@ -53,7 +52,7 @@ void parseOpts(int argc, char* argv[], char** filename)
         }
     }
 
-    if (filename == NULL) {
+    if (*filename == NULL) {
         fprintf(stderr, "%s", "[Error] No input file specified.\n");
         exit(EXIT_FAILURE);
     }
