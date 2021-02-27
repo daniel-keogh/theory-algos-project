@@ -7,7 +7,7 @@
 #include "sha512.h"
 #include "main.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     char* filename = NULL;
     parseOpts(argc, argv, &filename);
@@ -23,23 +23,24 @@ void parseOpts(int argc, char* argv[], char** filename)
     /* Parse user command line args using getopt_long()
      * Reference: <https://www.gnu.org/software/libc/manual/html_node/Getopt-Long-Option-Example.html>
      */
-    static struct option long_options[] = {
+    static struct option options[] = {
         {"help", no_argument, 0, 'h'},
         {"file", required_argument, 0, 'f'},
         {0, 0, 0, 0}
     };
 
     int opt;
-    int optionIndex = 0;
+    int optIndex = 0;
 
-    while ((opt = getopt_long(argc, argv, OPTS, long_options, &optionIndex)) != -1) {
+    while ((opt = getopt_long(argc, argv, OPTS, options, &optIndex)) != -1) {
         switch (opt) {
             case 'f':
                 // Check if the file is readable
                 if (access(optarg, R_OK) != -1) {
                     *filename = malloc(sizeof(char) * (strlen(optarg) + 1));
                     strcpy(*filename, optarg);
-                } else {
+                }
+                else {
                     fprintf(stderr, "[Error] File: \"%s\" not found.\n", optarg);
                     exit(EXIT_FAILURE);
                 }
