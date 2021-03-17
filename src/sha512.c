@@ -46,20 +46,72 @@ void readfile(const char* filename)
         exit(EXIT_FAILURE);
     }
 
+    enum Status S = READ;
+
     union Block block;
     size_t numBytes = fread(&block.bytes, 1, BLOCK_SIZE, pFile);
     uint64_t numBits = numBits + (8 * numBytes);
 
     printf("Read %ld bytes\n", numBytes);
 
-    while (!feof(pFile)) {
-        numBytes = fread(&block.bytes, 1, BLOCK_SIZE, pFile);
-        numBits = numBits + (8 * numBytes);
-
-        printf("Read %ld bytes\n", numBytes);
+    while (next_block(pFile, &block, &S, &numBits)) {
+        for (int i = 0; i < 16; i++) {
+            printf("%08" PF " ", block.words[i]);
+        }
+        printf("\n");
     }
 
     printf("Total bits read: %ld\n", numBits);
 
     fclose(pFile);
+}
+
+int next_block(FILE* pFile, union Block* block, enum Status* S, uint64_t* numbits)
+{
+    size_t nobytes;
+
+    if (*S == END) {
+        return 0;
+    }
+    else if (*S == READ) {
+        nobytes = fread(block->bytes, 1, 64, pFile);
+        *numbits = *numbits + (8 * nobytes);
+
+        if (nobytes == 64) {
+            return 1;
+        }
+        else if (nobytes <= 55) {
+            block->bytes[nobytes++] = 0x80;
+
+            while (nobytes++ < 56) {
+                block->bytes[nobytes] = 0x00;
+            }
+
+            block->sixf[7] = *numbits;
+
+            *S = END;
+        }
+        else {
+            block->bytes[nobytes] = 0x80;
+
+            while (nobytes++ < 64) {
+                block->bytes[nobytes] = 0x00;
+            }
+
+            *S = PAD;
+        }
+    }
+    else if (*S == PAD) {
+        nobytes = 0;
+
+        while (nobytes++ < 56) {
+            block->bytes[nobytes] = 0x00;
+        }
+
+        block->sixf[7] = *numbits;
+
+        *S = END;
+    }
+
+    return 1;
 }

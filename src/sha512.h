@@ -25,9 +25,17 @@ typedef uint8_t  Byte;
 union Block {
     Byte bytes[BLOCK_SIZE];
     Word words[32];
+    Word sixf[8];
+};
+
+enum Status {
+    READ,
+    PAD,
+    END
 };
 
 char* compute(const char* filename);
 void readfile(const char* filename);
+int next_block(FILE* pFile, union Block* block, enum Status* S, uint64_t* numbits);
 
 #endif

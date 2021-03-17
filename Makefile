@@ -14,6 +14,7 @@ OBJS=$(patsubst %,$(ODIR)/%,$(_OBJS))
 _OBJS=main.o sha512.o
 
 all: init $(EXEC)
+	@echo "Build complete."
 
 init:
 	@mkdir -p $(ODIR)/
