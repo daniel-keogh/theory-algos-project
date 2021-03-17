@@ -8,7 +8,14 @@ A C program that calculates & outputs the SHA-512 digest of a given input file.
 
 ## Compilation
 
-You can compile and run the program as follows:
+### Prerequisites
+
+First make sure you have the following installed on your system.
+
+- `gcc`
+- `make`
+
+After cloning the repository, you can compile and run the program as follows:
 
 ```sh
 $ make
@@ -22,6 +29,13 @@ $ ./sha512 [options]
 | `-h, --help`        | Prints some help text.  |
 | `-f, --file <file>` | Path to the input file. |
 
+<!-- #### Example
+
+```sh
+$ ./sha512 -f input.txt
+
+``` -->
+
 ### Testing
 
 ```sh
@@ -30,25 +44,27 @@ $ make test
 
 ## What is SHA-512 & Why is it Important?
 
-The Secure Hash Algorithm (SHA) functions were originally developed by the US National Institute of Standards and Technology (NIST) and published in 1993 as SHA-0, but subsequently revised with the release of SHA-1 in 1995 [2]. SHA-2 is the successor to SHA-1 and was designed by the NSA & standardised by NIST [2]. This is a family of four hash functions, with the most complex being SHA-512, so-called because it produces an output 512 bits in length [2].
+The Secure Hash Algorithm (SHA) functions were originally developed by the US National Institute of Standards and Technology (NIST) and published in 1993 as SHA-0, but subsequently revised with the release of SHA-1 in 1995 [2]. SHA-2 is the successor to SHA-1 and is a family of four hash functions, with the most complex being SHA-512, so-called because it produces an output 512 bits in length [2].
 
-SHA-512 is an example of a cryptographic hash function. That is, a function which can read in a message and compute a fixed-length string (or _digest_) which can be referred to as a unique representation of that message [1]. The motivation for hash functions like SHA-512 over digital signature schemes like RSA, lies in their ability to produce a short, fixed-length digest for messages of arbitrary length. In other words, even if we wanted to hash a message that is hundreds of megabytes in size, it would still be relatively fast to compute the message's digest. This is in contrast to algorithms like RSA where the length of the plaintext is limited [1].
+SHA-512 is an example of a cryptographic hash function. That is, a function which can read in a message and compute a fixed-length string (or _digest_) which can be referred to as a unique representation of that message [1]. The motivation for hash functions like SHA-512 over digital signature schemes like RSA, lies in their ability to produce a short, fixed-length digest for messages of arbitrary length. In other words, even if we wanted to hash a message that is hundreds of megabytes in size, it would still be relatively fast to compute its digest. This is in contrast to algorithms like RSA where the length of the plaintext is limited [1].
 
-An important characteristic of hash functions like SHA-512 is they are highly sensitive to all input bits [1]. This means that even minor alterations to the message will result in a vastly different digest being produced (see below). As a result, hash functions like SHA-512 have important application in the creation of digital signatures, and in verifying the integrity of messages (e.g. by providing a way to ensure digital files have not been modified) [2]. Just some of the many real-world use cases of hash functions include the Git revision control system, which uses them to identify files being tracked in a repository [2], as well crypto-currencies like Bitcoin, where it is used as part of its "proof of work" system [2].
+An important characteristic of hash functions like SHA-512 is they are highly sensitive to all input bits [1]. This means that even minor alterations to the message will result in a vastly different digest being produced. For example, below the input "abc" produces an output that is markedly distinct from the string "abb".
 
 <div align="center">
   <img src="https://user-images.githubusercontent.com/37158241/111521283-decc5a80-8750-11eb-91ed-b04bcbced56f.png" />
 </div>
 
+As a result of this property, hash functions like SHA-512 have found important application in the creation of digital signatures, and in verifying the integrity of messages (e.g. by providing a way to ensure digital files have not been modified) [2]. Just some of the many real-world use cases of hash functions include the Git revision control system, which uses them to identify files being tracked in a repository, as well in crypto-currencies like Bitcoin [2].
+
 ## Q & A
 
 **_Why can't we reverse the SHA512 algorithm to retrieve the original message from a hash digest?_**
 
-A central characteristic of any secure hash function like SHA-512 is that of "preimage resistance", also referred to as "one-wayness". This means that for any given hash, it must be computationally infeasible to find an input message that will produce the same hash output [1]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, hash algorithms like SHA-512 can still be susceptible to collisions.
+A central characteristic of any secure hash function like SHA-512 is that of "preimage resistance", also referred to as "one-wayness". This means that for any given hash, it must be computationally infeasible to find an input message that will produce the same hash output [1]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, hash algorithms like SHA-512 are still be susceptible to collisions.
 
 A second property of hash functions is that of "second preimage resistance", also referred to as (weak) collision resistance. This means that for hash algorithms like SHA-512, it should be infeasible to create two distinct plaintext messages that produce the exact same digest [1]. This is a crucial characteristic of hash algorithm as they are widely used for verifying digital files and deriving cryptographic keys. If a bad actor were able to feasibly construct a message that produces the same hash output, they could perform substitution attacks, replacing a file with another malicious file that produces the same digest [1]. The best way to guard against collisions is to ensure there is no methodical way of constructing a message that will produce the same hash as another. This can be achieved by increasing the number of bits in the output [1].
 
-It is not possible to design a hash function that is fully resistant to collisions. This is because the input to a hash function is theoretically infinite, while the digest will always be the same length. For this reason, it must be true that multiple inputs will inevitably produce the same hash value [1]. This is referred to as the _pigeonhole principle_, which states that if a pigeon loop were to contain 100 birds but only 99 holes, at least one hole must be occupied by two birds [1]. Because every hash algorithm produces an output with a fixed number of bits (_n_), there are 2^n possible digests that can be computed by that algorithm, while there is an infinite number of possible inputs [1] (in the case of SHA-512 there are 2^512 possible outputs). In other words, there are an infinite number of possible inputs that can produce the same output. Because of this, even given unlimited computing power it is not possible to retrieve the _exact_ message that produced a given hash value as there are so many inputs that can produce the same hash [2]. It would of course be possible to determine _some_ possible messages that produce that hash (i.e. collisions), given enough time and resources, but it would never be possible to determine what input was fed to the algorithm originally [2].
+It is not possible to design a hash function that is fully resistant to collisions. This is because the input to a hash function is theoretically infinite, while the digest will always be the same length. For this reason, it must be true that multiple inputs will inevitably produce the same hash value [1]. This is illustrated by the _pigeonhole principle_, which states that if a pigeon loop were to contain 100 birds but only 99 holes, at least one hole must be occupied by two birds [1]. Because every hash algorithm produces an output with a fixed number of bits (_n_), there are 2<sup>_n_</sup> possible digests that can be computed by that algorithm, while there is an infinite number of possible inputs [1] (in the case of SHA-512 there are 2<sup>512</sup> possible outputs). In other words, there are an infinite number of possible inputs that can produce the same output. Because of this, even given unlimited computing power it is not possible to retrieve the _exact_ message that produced a given hash value as there are so many inputs that could produce the same hash [2]. It would of course be possible to determine _some_ possible messages that produce that hash (i.e. collisions), given enough time and resources, but it would never be possible to determine what input was fed to the algorithm originally [2].
 
 Another reason why it is impossible to reverse a hash digest simply has to do with how the hashes are computed. For instance, algorithms in the SHA-1 and SHA-2 families are based on Merkle–Damgård construction, which works by splitting the input message into blocks of equal length and applying a compression function to each block, thereby transforming the input into a smaller output [2].
 
