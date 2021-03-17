@@ -34,7 +34,11 @@ The Secure Hash Algorithm (SHA) functions were originally developed by the US Na
 
 SHA-512 is an example of a cryptographic hash function. That is, a function which can read in a message and compute a fixed-length string (or _digest_) which can be referred to as a unique representation of that message [1]. The motivation for hash functions like SHA-512 over digital signature schemes like RSA, lies in their ability to produce a short, fixed-length digest for messages of arbitrary length. In other words, even if we wanted to hash a message that is hundreds of megabytes in size, it would still be relatively fast to compute the message's digest. This is in contrast to algorithms like RSA where the length of the plaintext is limited [1].
 
-An important characteristic of hash functions like SHA-512 is they are highly sensitive to all input bits [1]. This means that even minor alterations to the message will result in a vastly different digest being produced. As a result, hash functions like SHA-512 have important application in the creation of digital signatures, and in verifying the integrity of messages (e.g. by providing a way to ensure digital files have not been modified) [2]. Just some of the many real-world use cases of hash functions include the Git revision control system, which uses them to identify files being tracked in a repository [2], as well crypto-currencies like Bitcoin, where it is used as part of its "proof of work" system [2].
+An important characteristic of hash functions like SHA-512 is they are highly sensitive to all input bits [1]. This means that even minor alterations to the message will result in a vastly different digest being produced (see below). As a result, hash functions like SHA-512 have important application in the creation of digital signatures, and in verifying the integrity of messages (e.g. by providing a way to ensure digital files have not been modified) [2]. Just some of the many real-world use cases of hash functions include the Git revision control system, which uses them to identify files being tracked in a repository [2], as well crypto-currencies like Bitcoin, where it is used as part of its "proof of work" system [2].
+
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/37158241/111521283-decc5a80-8750-11eb-91ed-b04bcbced56f.png" />
+</div>
 
 ## Q & A
 
