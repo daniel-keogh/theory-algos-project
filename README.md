@@ -48,7 +48,7 @@ The Secure Hash Algorithm (SHA) functions were originally developed by the US Na
 
 SHA-512 is an example of a cryptographic hash function. That is, a function which can read in a message and compute a fixed-length string (or _digest_) which can be seen as a unique representation of that message, much like a fingerprint [2]. The motivation for hash functions like SHA-512 over digital signature schemes like RSA, lies in their ability to produce a short, fixed-length digest for messages of arbitrary length. In other words, even if we had a message that is hundreds of megabytes in size, it should still be relatively fast to compute its digest. This is in contrast to algorithms like RSA where the length of the plaintext is limited [2].
 
-An important characteristic of hash functions like SHA-512 is they are highly sensitive to all input bits [2]. This means that even minor alterations to the message will result in a vastly different digest being produced. For example, below the input "abc" produces a SHA-256 output that is markedly distinct from the string "abb", despite only a single letter being modified.
+An important characteristic of hash functions like SHA-512 is they are highly sensitive to all input bits [2]. This means that even minor alterations to the message will result in a vastly different digest being produced. This is called the avalanche effect [6]. For example, below the input "abc" produces a SHA-256 output that is markedly distinct from the string "abb", despite only a single letter being modified.
 
 <div align="center">
   <img src="https://user-images.githubusercontent.com/37158241/111521283-decc5a80-8750-11eb-91ed-b04bcbced56f.png" />
@@ -68,13 +68,16 @@ It is not possible to design a hash function that is fully resistant to collisio
 
 **_Can you design an algorithm that, given enough time, will find input messages that give each of the possible 512-bit strings?_**
 
-If given a hash value, one can search for preimages by continuously checking the hash output of different messages until eventually finding a message that produces the same output as the target hash. The below C function is adapted from the pseudo code shown on page 174 of [1]. Here, the `find_preimage` function takes a SHA-512 hash (called `target`), that will find the SHA-512 hash of a random plaintext message (`m`). It will then use `strcmp` to check if the hash of the message (`hash_m`) equals the hash value passed into the function. If so, the function will return the matching input message (`m`).
+As mentioned previously, secure hash algorithms should be "preimage resistant". A preimage of a given hash value (`H`), is any message (`M`) that when run through the hash algorithm will produce the value of `H` [1]. In other words, a preimage is any message wherein `Hash(M) == H` [1]. Preimages are distinct from collisions, which is where two distinct input messages produce the same hash.
+
+If given a hash value, one can search for preimages using a brute force technique which involves continuously checking the hash output of different messages until eventually finding a message that produces the same output as the target hash. The below C code is adapted from the pseudo-code shown on page 174 of [1]. Here, the `find_preimage` function takes a SHA-512 hash (called `target`), and will iteratively try to find the SHA-512 hash of a random plaintext message (`m`). It will then use `strcmp` to check if the hash of that message (`hash_m`) equals the hash value passed into the function. If so, the function will return the matching input message (`m`), or otherwise continue looping until a match is found.
 
 ```c
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 
+/* Finds a preimage of `target` using brute-force. */
 char* find_preimage(const char* target)
 {
     while (true) {
@@ -82,15 +85,15 @@ char* find_preimage(const char* target)
         char* hash_m = sha512(m);
 
         if (strcmp(hash_m, target) == 0) {
-            return m;
+            return m; // found preimage
         }
     }
 }
 ```
 
-If given enough time, and provided with each of the 512-bit strings starting from `"0" * 512`, up to `"f" * 512`, this function will return input messages for each of the possible 512-bit strings. 
+If given enough time, and provided with each of the 512-bit strings starting from `"0" * 128`, up to `"f" * 128`, this function will return an input message for each of the possible 512-bit strings. 
 
-In the code below, the `for` loop, in which the `find_preimage` function is called, executes once for each SHA-512 string in the `targets[]` array. The result is then printed to the screen. 
+In the code below, the `for` loop (in which the `find_preimage` function is called), executes once for each SHA-512 string in the `targets[]` array. The result is then printed to the screen. 
 
 ```c
 #include <stdio.h>
@@ -100,14 +103,17 @@ In the code below, the `for` loop, in which the `find_preimage` function is call
 
 int main(void)
 {
+    // array of all SHA-512 output strings
     char* targets[] = {
         "0000...",
         // ......,
         "ffff...",
     };
 
+    // the total number of hashes that can be produced by SHA-512 (2^512)
     uint64_t num_hashes = (uint64_t)pow(2, 512);
 
+    // for each hash in targets[], try and brute-force a preimage
     for (int i = 0; i < num_hashes; i++) {
         char* result = find_preimage(targets[i]);
         puts(result);
@@ -116,6 +122,8 @@ int main(void)
     return EXIT_SUCCESS;
 }
 ```
+
+However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>L</sup> evaluations, where L is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find an input message, as explained in [7].
 
 **_How difficult is it to find a hash digest beginning with at least twelve zeros?_**
 
@@ -130,3 +138,7 @@ int main(void)
 4. [_Hashing explained: Why it's your best bet to protect stored passwords_](https://www.csoonline.com/article/3602698/hashing-explained-why-its-your-best-bet-to-protect-stored-passwords.html). CSO Online. Lucian Constantin. Jan 13, 2021.
 
 5. Quynh H. Dang. _Secure Hash Standard_. Federal Inf. Process. Stds. (NIST FIPS) - 180-4. Gaithersburg, MD: US Department of Commerce, National Institute of Standards and Technology, Aug. 2015. DOI: [10.6028/NIST.FIPS.180-4](https://doi.org/10.6028/NIST.FIPS.180-4).
+
+6. [_Secure Hash Algorithms_](https://brilliant.org/wiki/secure-hashing-algorithms/) Brilliant.
+
+7. [Why haven't any SHA-256 collisions been found yet?](https://crypto.stackexchange.com/a/47810). user47922. StackExchange Cryptography. May 29 2017.
