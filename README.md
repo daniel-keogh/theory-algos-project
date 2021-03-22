@@ -68,6 +68,28 @@ It is not possible to design a hash function that is fully resistant to collisio
 
 **_Can you design an algorithm that, given enough time, will find input messages that give each of the possible 512-bit strings?_**
 
+If given a hash value, one can search for preimages by continuously checking the hash output of different messages until eventually finding a message that produces the same output as the target hash. The below C function is adapted from the pseudo code shown on page 174 of [1]. Here, the `find_preimage` function takes a SHA-512 hash (called `target`), that will find the SHA-512 hash of a random plaintext message (`m`). It will then use `strcmp` to check if the hash of the message (`hash_m`) equals the hash value passed into the function. If so, the function will return the matching input message (`m`).
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+char* find_preimage(const char* target)
+{
+    while (true) {
+        char* m = some_message();
+        char* hash_m = sha512(m);
+
+        if (strcmp(hash_m, target) == 0) {
+            return m;
+        }
+    }
+}
+```
+
+If given enough time, and provided with each of the 512-bit strings starting from `"0" * 512`, up to `"f" * 512`, this function will return input messages for each of the possible 512-bit strings.
+
 **_How difficult is it to find a hash digest beginning with at least twelve zeros?_**
 
 ## References
