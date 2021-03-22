@@ -4,7 +4,7 @@ Y4S2 Theory of Algorithms Project
 
 ## Description
 
-A C program that calculates & outputs the SHA-512 digest of a given input file.
+A C program that calculates & outputs the SHA-512 digest of a given input file, in accordance with the [NIST FIPS 180-4](https://doi.org/10.6028/NIST.FIPS.180-4) specification.
 
 ## Compilation
 
@@ -15,7 +15,13 @@ First make sure you have the following installed on your system.
 - `gcc`
 - `make`
 
-After cloning the repository, you can compile and run the program as follows:
+Both of these can be installed on Debian-based systems by running the following:
+
+```sh
+$ sudo apt install build-essential
+```
+
+After cloning the repository, you can then compile and run the program as follows:
 
 ```sh
 $ make
@@ -29,14 +35,29 @@ $ ./sha512 [options]
 | `-h, --help`        | Prints some help text.  |
 | `-f, --file <file>` | Path to the input file. |
 
-<!-- #### Example
+#### Example
 
 ```sh
 $ ./sha512 -f input.txt
+ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f
+```
 
-``` -->
+### Installation
 
-### Testing
+```sh
+$ make
+$ sudo make install
+```
+
+#### Uninstalling
+
+```sh
+$ sudo make uninstall
+```
+
+## Testing
+
+You can test the program by running the following:
 
 ```sh
 $ make test
@@ -64,7 +85,7 @@ One of the main distinctions between hashing and encryption is reversibility. En
 
 A central characteristic of any secure hash function like SHA-512 is that of "preimage resistance", also referred to as "one-wayness". This means that for any given hash, it must be computationally infeasible to find a message that will produce the same hash output [2]. Meanwhile, a second property of hash functions is that of "second preimage resistance", also referred to as (weak) collision resistance. This means that for hash algorithms like SHA-512, it should be infeasible to create two distinct plaintext messages that produce the exact same digest [2]. These are crucial characteristics of hash algorithms as they are widely used for verifying digital files and deriving cryptographic keys. If a bad actor were able to feasibly construct a message that produces the same hash output, they could perform substitution attacks, replacing a file with another malicious file that produces the same digest [2].
 
-It is not possible to design a hash function that is fully resistant to collisions. This is because the input to a hash function is theoretically infinite, while the digest will always be the same length. For this reason, it must be true that multiple inputs will inevitably produce the same hash value [2]. This is illustrated by the _Pigeonhole Principle_, which states that if a pigeon loop were to contain 100 birds but only 99 holes, at least one hole must be occupied by two birds [2]. Because every hash algorithm produces an output with a fixed number of bits (_n_), there are 2<sup>_n_</sup> possible digests that can be computed by that algorithm, while there is an infinite number of possible inputs [2] (in the case of SHA-512 there are 2<sup>512</sup> possible outputs). In other words, there are an infinite number of possible inputs that can produce the same output. Because of this, even given unlimited computing power it is not possible to retrieve the _exact_ message that produced a given hash value as there are so many inputs that could produce the same hash [1]. It would of course be possible to determine _some_ possible messages that produce that hash (i.e. collisions), given enough time and resources, but it would not be possible to determine precisely what input was fed to the algorithm originally [1].
+It is not possible to design a hash function that is fully resistant to collisions. This is because the input to a hash function is theoretically infinite, while the digest will always be the same length. For this reason, it must be true that multiple inputs will inevitably produce the same hash value [2]. This is illustrated by the _Pigeonhole Principle_, which states that if a pigeon loop were to contain 100 birds but only 99 holes, at least one hole must be occupied by two birds [2]. Because every hash algorithm produces an output with a fixed number of bits (**_n_**), there are 2<sup>_n_</sup> possible digests that can be computed by that algorithm, while there is an infinite number of possible inputs [2] (in the case of SHA-512 there are 2<sup>512</sup> possible outputs). In other words, there are an infinite number of possible inputs that can produce the same output. Because of this, even given unlimited computing power it is not possible to retrieve the _exact_ message that produced a given hash value as there are so many inputs that could produce the same hash [1]. It would of course be possible to determine _some_ possible messages that produce that hash (i.e. collisions), given enough time and resources, but it would not be possible to determine precisely what input was fed to the algorithm originally [1].
 
 **_Can you design an algorithm that, given enough time, will find input messages that give each of the possible 512-bit strings?_**
 
@@ -123,7 +144,7 @@ int main(void)
 }
 ```
 
-However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>L</sup> evaluations, where **_L_** is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find an input message, as explained in [7].
+However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>_L_</sup> evaluations, where **_L_** is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find an input message, as explained in [7].
 
 **_How difficult is it to find a hash digest beginning with at least twelve zeros?_**
 

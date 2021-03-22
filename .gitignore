@@ -6,7 +6,6 @@
 *.ko
 *.obj
 *.elf
-sha512
 
 # Linker output
 *.ilk
@@ -36,6 +35,7 @@ sha512
 *.i*86
 *.x86_64
 *.hex
+sha512
 
 # Debug files
 *.dSYM/

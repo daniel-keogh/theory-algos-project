@@ -8,6 +8,7 @@ EXEC=sha512
 # Directories
 SDIR=src
 ODIR=obj
+INS_DIR=/usr/local/bin
 
 # Object files
 OBJS=$(patsubst %,$(ODIR)/%,$(_OBJS))
@@ -25,7 +26,14 @@ $(ODIR)/%.o: $(SDIR)/%.c
 $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
-# test:
+test:
+	@echo "Not implemented"
+
+install:
+	cp $(EXEC) $(INS_DIR)/
+
+uninstall:
+	rm $(INS_DIR)/$(EXEC)
 
 clean:
 	rm -rf $(ODIR)/
