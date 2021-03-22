@@ -88,7 +88,34 @@ char* find_preimage(const char* target)
 }
 ```
 
-If given enough time, and provided with each of the 512-bit strings starting from `"0" * 512`, up to `"f" * 512`, this function will return input messages for each of the possible 512-bit strings.
+If given enough time, and provided with each of the 512-bit strings starting from `"0" * 512`, up to `"f" * 512`, this function will return input messages for each of the possible 512-bit strings. 
+
+In the code below, the `for` loop, in which the `find_preimage` function is called, executes once for each SHA-512 string in the `targets[]` array. The result is then printed to the screen. 
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <inttypes.h>
+#include <math.h>
+
+int main(void)
+{
+    char* targets[] = {
+        "0000...",
+        // ......,
+        "ffff...",
+    };
+
+    uint64_t num_hashes = (uint64_t)pow(2, 512);
+
+    for (int i = 0; i < num_hashes; i++) {
+        char* result = find_preimage(targets[i]);
+        puts(result);
+    }
+
+    return EXIT_SUCCESS;
+}
+```
 
 **_How difficult is it to find a hash digest beginning with at least twelve zeros?_**
 
