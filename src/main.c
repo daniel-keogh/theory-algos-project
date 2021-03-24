@@ -14,8 +14,8 @@ int main(int argc, char* argv[])
 
     FILE* pfile = open_file(filename);
 
-    // char* result = sha512(pfile);
-    // puts(result);
+    char* result = sha512(pfile);
+    puts(result);
 
     fclose(pfile);
 

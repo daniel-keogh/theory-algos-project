@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <byteswap.h>
 
 #include "sha512.h"
+
+const int _i = 1;
 
 const Word K[] = {
     0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
@@ -26,92 +30,154 @@ const Word K[] = {
     0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
 
-const Word H[] = {
-    0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
-    0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
-};
-
-char* compute(const char* filename)
+char* sha512(FILE* pfile)
 {
-    readfile(filename);
-    return "";
-}
+    Word H[] = {
+       0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
+       0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
+    };
 
-void readfile(const char* filename)
-{
-    FILE* pFile;
+    // The current block
+    union Block M;
 
-    if ((pFile = fopen(filename, "r")) == NULL) {
-        fprintf(stderr, "%s", "[Error] Failed to open the input file.\n");
-        exit(EXIT_FAILURE);
-    }
+    // Total number of bits read
+    uint64_t numBits = 0;
 
+    // Current status of reading input
     enum Status S = READ;
 
-    union Block block;
-    size_t numBytes = fread(&block.bytes, 1, BLOCK_SIZE, pFile);
-    uint64_t numBits = numBits + (8 * numBytes);
-
-    printf("Read %ld bytes\n", numBytes);
-
-    while (next_block(pFile, &block, &S, &numBits)) {
-        for (int i = 0; i < 16; i++) {
-            printf("%08" PF " ", block.words[i]);
-        }
-        printf("\n");
+    // Loop through the (pre-processed) blocks
+    while (next_block(pfile, &M, &S, &numBits)) {
+        next_hash(&M, H);
     }
 
-    printf("Total bits read: %ld\n", numBits);
+    char* result = malloc(sizeof(char) * BLOCK_SIZE + 1);
 
-    fclose(pFile);
+    for (int i = 0; i < 8; i++) {
+        char tmp[17];
+        sprintf(tmp, "%08" PF, H[i]);
+        strcat(result, tmp);
+    }
+
+    return result;
 }
 
-int next_block(FILE* pFile, union Block* block, enum Status* S, uint64_t* numbits)
+int next_block(FILE* pFile, union Block* M, enum Status* S, Word* numBits)
 {
-    size_t nobytes;
+    // Number of bytes read.
+    size_t numBytes;
 
     if (*S == END) {
         return 0;
     }
     else if (*S == READ) {
-        nobytes = fread(block->bytes, 1, 64, pFile);
-        *numbits = *numbits + (8 * nobytes);
+        // Try to read 128 bytes from the input file
+        numBytes = fread(M->bytes, 1, BLOCK_SIZE, pFile);
 
-        if (nobytes == 64) {
-            return 1;
+        // Calculate the total bits read so far
+        *numBits = *numBits + (8 * numBytes);
+
+        if (numBytes == BLOCK_SIZE) {
+            // Do nothing
         }
-        else if (nobytes <= 55) {
-            block->bytes[nobytes++] = 0x80;
+        else if (numBytes < BLOCK_SIZE - 8) {
+            // We have enough room for all the padding
+            // Append a 1 bit (and seven 0 bits to make a full byte)
+            M->bytes[numBytes] = 0x80;
 
-            while (nobytes++ < 56) {
-                block->bytes[nobytes] = 0x00;
+            // Append enough 0 bits, leaving 128 at the end
+            for (numBytes++; numBytes < BLOCK_SIZE - 8; numBytes++) {
+                M->bytes[numBytes] = 0x00;
             }
 
-            block->sixf[7] = *numbits;
+            // Append numBits as a big endian integer
+            M->sixf[15] = is_lilend ? bswap_64(*numBits) : *numBits;
 
             *S = END;
         }
         else {
-            block->bytes[nobytes] = 0x80;
+            // At the end of the input message and not enough room
+            // in this block for all padding.
+            // Append a 1 bit (and seven 0 bits to make a full byte)
+            M->bytes[numBytes] = 0x80;
 
-            while (nobytes++ < 64) {
-                block->bytes[nobytes] = 0x00;
+            // Append 0 bits
+            for (numBytes++; numBytes < BLOCK_SIZE; numBytes++) {
+                M->bytes[numBytes] = 0x00;
             }
 
             *S = PAD;
         }
     }
     else if (*S == PAD) {
-        nobytes = 0;
-
-        while (nobytes++ < 56) {
-            block->bytes[nobytes] = 0x00;
+        // Append 0 bits
+        for (numBytes = 0; numBytes < BLOCK_SIZE - 8; numBytes++) {
+            M->bytes[numBytes] = 0x00;
         }
 
-        block->sixf[7] = *numbits;
+        // Append numBits as a big endian integer
+        M->sixf[15] = is_lilend ? bswap_64(*numBits) : *numBits;
 
         *S = END;
     }
 
+    // Swap byte order of the words if little endian
+    if (is_lilend) {
+        for (int i = 0; i < 16; i++) {
+            M->words[i] = bswap_64(M->words[i]);
+        }
+    }
+
     return 1;
+}
+
+void next_hash(union Block* M, Word* H)
+{
+    Word W[80];
+
+    // Prepare the message schedule
+    // Section 6.4.2, Part 1
+    for (int t = 0; t <= 15; t++) {
+        W[t] = M->words[t];
+    }
+
+    for (int t = 16; t <= 79; t++) {
+        W[t] = LOW_SIG_1(W[t - 2]) + W[t - 7] + LOW_SIG_0(W[t - 15]) + W[t - 16];
+    }
+
+    // Initialise the eight working variables
+    // Section 6.4.2, Part 2
+    Word a = H[0];
+    Word b = H[1];
+    Word c = H[2];
+    Word d = H[3];
+    Word e = H[4];
+    Word f = H[5];
+    Word g = H[6];
+    Word h = H[7];
+
+    // Section 6.4.2, Part 3
+    for (int t = 0; t <= 79; t++) {
+        Word T1 = h + CAP_SIG_1(e) + Ch(e, f, g) + K[t] + W[t];
+        Word T2 = CAP_SIG_0(a) + Maj(a, b, c);
+
+        h = g;
+        g = f;
+        f = e;
+        e = d + T1;
+        d = c;
+        c = b;
+        b = a;
+        a = T1 + T2;
+    }
+
+    // Section 6.4.2, Part 4
+    H[0] = a + H[0];
+    H[1] = b + H[1];
+    H[2] = c + H[2];
+    H[3] = d + H[3];
+    H[4] = e + H[4];
+    H[5] = f + H[5];
+    H[6] = g + H[6];
+    H[7] = h + H[7];
 }
