@@ -44,6 +44,8 @@ ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a8
 
 ### Installation
 
+To install the executable for system-wide use, you could run:
+
 ```sh
 $ make
 $ sudo make install
@@ -112,9 +114,9 @@ char* find_preimage(const char* target)
 }
 ```
 
-If given enough time, and provided with each of the 512-bit strings starting from `"0" * 128`, up to `"f" * 128`, this function will return an input message for each of the possible 512-bit strings. 
+If given enough time, and provided with each of the 512-bit strings starting from `"0" * 128`, up to `"f" * 128`, this function will return an input message for each of the possible 512-bit strings.
 
-In the code below, the `for` loop (in which the `find_preimage()` function is called), executes once for each SHA-512 string in the `targets[]` array. A preimage is found and the result is subsequently printed to the screen. 
+In the code below, the `for` loop (in which the `find_preimage()` function is called), executes once for each SHA-512 string in the `targets[]` array. On each iteration, once a preimage is found, the result is subsequently printed to the screen.
 
 ```c
 #include <stdio.h>
@@ -144,7 +146,7 @@ int main(void)
 }
 ```
 
-However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>_L_</sup> evaluations, where **_L_** is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find an input message, as explained in [7].
+However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>_L_</sup> evaluations, where **_L_** is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find even just a single an input message, as explained in [7]. (Although one should note that that particular example involved _collision attacks_ on SHA-256; preimage attacks on SHA-512 would take a considerably longer amount of time.)
 
 **_How difficult is it to find a hash digest beginning with at least twelve zeros?_**
 
