@@ -45,7 +45,12 @@ char* sha512(FILE* file)
     uint64_t numBits = 0;   // Total number of bits read
 
     // Loop through the (pre-processed) blocks
-    while (next_block(file, &M, &S, &numBits)) {
+    int next;
+    while ((next = next_block(file, &M, &S, &numBits)) != 0) {
+        if (next == -1) {
+            fprintf(stderr, "%s", "[Error] Failed to read anything from that file.\n");
+            exit(EXIT_FAILURE);
+        }
         next_hash(&M, H);
     }
 
@@ -73,7 +78,10 @@ int next_block(FILE* file, union Block* M, enum Status* S, Word* numBits)
         numBytes = fread(M->bytes, 1, BLOCK_SIZE, file);    // Read 128 bytes from the input file
         *numBits = *numBits + (BYTE_SIZE * numBytes);       // Calculate the total bits read so far
 
-        if (numBytes == BLOCK_SIZE) {
+        if (numBytes == 0) {
+            return -1;  // Failed to read any bytes
+        }
+        else if (numBytes == BLOCK_SIZE) {
             // Do nothing
         }
         else if (numBytes < BLOCK_SIZE - BYTE_SIZE) {

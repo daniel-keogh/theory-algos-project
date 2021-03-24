@@ -49,6 +49,7 @@ char* sha512(FILE* file);
 
 /* Returns 1 if a new block was created from the original message or padding.
  * Returns 0 if all of the padded message has already been consumed.
+ * Returns -1 if it failed to read any bytes from the file.
  */
 int next_block(FILE* file, union Block* block, enum Status* S, Word* numBits);
 
