@@ -10,19 +10,22 @@
 int main(int argc, char* argv[])
 {
     char* filename = NULL;
-    parseOpts(argc, argv, &filename);
+    parse_opts(argc, argv, &filename);
 
-    char* result = compute(filename);
-    puts(result);
+    FILE* pfile = open_file(filename);
+
+    // char* result = sha512(pfile);
+    // puts(result);
+
+    fclose(pfile);
 
     return EXIT_SUCCESS;
 }
 
-void parseOpts(int argc, char* argv[], char** filename)
+void parse_opts(int argc, char* argv[], char** filename)
 {
-    /* Parse user command line args using getopt_long()
-     * Reference: <https://www.gnu.org/software/libc/manual/html_node/Getopt-Long-Option-Example.html>
-     */
+    // Parse user command line args using getopt_long()
+    // Reference: <https://www.gnu.org/software/libc/manual/html_node/Getopt-Long-Option-Example.html>
     static struct option options[] = {
         {"help", no_argument, 0, 'h'},
         {"file", required_argument, 0, 'f'},
@@ -53,10 +56,24 @@ void parseOpts(int argc, char* argv[], char** filename)
         }
     }
 
+    // Make sure a file was given
     if (*filename == NULL) {
         fprintf(stderr, "%s", "[Error] No input file specified.\n");
+        usage(argv[0]);
         exit(EXIT_FAILURE);
     }
+}
+
+FILE* open_file(const char* filename)
+{
+    FILE* pFile;
+
+    if ((pFile = fopen(filename, "r")) == NULL) {
+        fprintf(stderr, "%s", "[Error] Failed to open the input file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return pFile;
 }
 
 void usage(const char* exec)

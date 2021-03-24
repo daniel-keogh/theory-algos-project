@@ -5,7 +5,10 @@
 #define OPTS "f:h"
 
 /* Parse the user's provided command-line arguments. */
-void parseOpts(int argc, char* argv[], char** filename);
+void parse_opts(int argc, char* argv[], char** filename);
+
+/* Opens the file with the given path and returns a pointer to it. */
+FILE* open_file(const char* filename);
 
 /* Output program usage information. */
 void usage(const char* exec);
