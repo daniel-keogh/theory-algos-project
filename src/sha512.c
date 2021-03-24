@@ -7,6 +7,7 @@
 
 const int _i = 1;
 
+/* Constants from section 4.2.3 */
 const Word K[] = {
     0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
     0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
@@ -30,39 +31,37 @@ const Word K[] = {
     0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
 
-char* sha512(FILE* pfile)
+char* sha512(FILE* file)
 {
+    // Define initial hash values
+    // Section 5.3.5
     Word H[] = {
        0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
        0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
     };
 
-    // The current block
-    union Block M;
-
-    // Total number of bits read
-    uint64_t numBits = 0;
-
-    // Current status of reading input
-    enum Status S = READ;
+    union Block M;          // The current block
+    enum Status S = READ;   // Current status of reading input
+    uint64_t numBits = 0;   // Total number of bits read
 
     // Loop through the (pre-processed) blocks
-    while (next_block(pfile, &M, &S, &numBits)) {
+    while (next_block(file, &M, &S, &numBits)) {
         next_hash(&M, H);
     }
 
+    // Append the hash values and return a single digest string
     char* result = malloc(sizeof(char) * BLOCK_SIZE + 1);
 
     for (int i = 0; i < 8; i++) {
-        char tmp[17];
-        sprintf(tmp, "%08" PF, H[i]);
+        char tmp[(BLOCK_SIZE / BYTE_SIZE) + 1];
+        sprintf(tmp, "%016" PF, H[i]);
         strcat(result, tmp);
     }
 
     return result;
 }
 
-int next_block(FILE* pFile, union Block* M, enum Status* S, Word* numBits)
+int next_block(FILE* file, union Block* M, enum Status* S, Word* numBits)
 {
     // Number of bytes read.
     size_t numBytes;
@@ -71,23 +70,20 @@ int next_block(FILE* pFile, union Block* M, enum Status* S, Word* numBits)
         return 0;
     }
     else if (*S == READ) {
-        // Try to read 128 bytes from the input file
-        numBytes = fread(M->bytes, 1, BLOCK_SIZE, pFile);
-
-        // Calculate the total bits read so far
-        *numBits = *numBits + (8 * numBytes);
+        numBytes = fread(M->bytes, 1, BLOCK_SIZE, file);    // Read 128 bytes from the input file
+        *numBits = *numBits + (BYTE_SIZE * numBytes);       // Calculate the total bits read so far
 
         if (numBytes == BLOCK_SIZE) {
             // Do nothing
         }
-        else if (numBytes < BLOCK_SIZE - 8) {
-            // We have enough room for all the padding
+        else if (numBytes < BLOCK_SIZE - BYTE_SIZE) {
+            // Enough room for all the padding:
             // Append a 1 bit (and seven 0 bits to make a full byte)
-            M->bytes[numBytes] = 0x80;
+            M->bytes[numBytes] = ONE_BIT;
 
             // Append enough 0 bits, leaving 128 at the end
-            for (numBytes++; numBytes < BLOCK_SIZE - 8; numBytes++) {
-                M->bytes[numBytes] = 0x00;
+            for (numBytes++; numBytes < BLOCK_SIZE - BYTE_SIZE; numBytes++) {
+                M->bytes[numBytes] = ZERO_BIT;
             }
 
             // Append numBits as a big endian integer
@@ -96,14 +92,13 @@ int next_block(FILE* pFile, union Block* M, enum Status* S, Word* numBits)
             *S = END;
         }
         else {
-            // At the end of the input message and not enough room
-            // in this block for all padding.
+            // At end of input message & not enough room in this block for all padding.
             // Append a 1 bit (and seven 0 bits to make a full byte)
-            M->bytes[numBytes] = 0x80;
+            M->bytes[numBytes] = ONE_BIT;
 
             // Append 0 bits
             for (numBytes++; numBytes < BLOCK_SIZE; numBytes++) {
-                M->bytes[numBytes] = 0x00;
+                M->bytes[numBytes] = ZERO_BIT;
             }
 
             *S = PAD;
@@ -111,8 +106,8 @@ int next_block(FILE* pFile, union Block* M, enum Status* S, Word* numBits)
     }
     else if (*S == PAD) {
         // Append 0 bits
-        for (numBytes = 0; numBytes < BLOCK_SIZE - 8; numBytes++) {
-            M->bytes[numBytes] = 0x00;
+        for (numBytes = 0; numBytes < BLOCK_SIZE - BYTE_SIZE; numBytes++) {
+            M->bytes[numBytes] = ZERO_BIT;
         }
 
         // Append numBits as a big endian integer
