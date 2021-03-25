@@ -71,19 +71,19 @@ The Secure Hash Algorithm (SHA) functions were originally developed by the US Na
 
 SHA-512 is an example of a cryptographic hash function. That is, a function which can read in a message and compute a fixed-length string (or _digest_) which can be seen as a unique representation of that message, much like a fingerprint [2]. The motivation for hash functions like SHA-512 over digital signature schemes like RSA, lies in their ability to produce a short, fixed-length digest for messages of arbitrary length. In other words, even if we had a message that is hundreds of megabytes in size, it should still be relatively fast to compute its digest. This is in contrast to algorithms like RSA where the length of the plaintext is limited [2].
 
-An important characteristic of hash functions like SHA-512 is they are highly sensitive to all input bits [2]. This means that even minor alterations to the message will result in a vastly different digest being produced. This is called the avalanche effect [6]. For example, below the input "abc" produces a SHA-256 output that is markedly distinct from the string "abb", despite only a single letter being modified.
+An important characteristic of hash functions like SHA-512 is they are highly sensitive to all input bits [2]. This means that even minor alterations to the message will result in a vastly different digest being produced. This is called the avalanche effect [3]. For example, below the input "abc" produces a SHA-256 output that is markedly distinct from the string "abb", despite only a single letter being modified.
 
 <div align="center">
   <img src="https://user-images.githubusercontent.com/37158241/111521283-decc5a80-8750-11eb-91ed-b04bcbced56f.png" />
 </div>
 
-As a result of this property, hash functions like SHA-512 have found important application in the creation of digital signatures and in verifying the integrity of messages, e.g. by providing a way to ensure digital files have not been modified [1]. Just some of the many other real-world use cases of hash functions include the Git revision control system, which uses them to identify files being tracked in a repository [1]. Meanwhile SHA-512's sibling algorithm, SHA-256, is used in popular authentication and encryption protocols, including SSL, TLS, IPsec, SSH, and PGP [3]. In Linux systems, SHA-256 is also used for hashing passwords, while cryptocurrencies like Bitcoin use it for verifying transactions [3].
+As a result of this property, hash functions like SHA-512 have found important application in the creation of digital signatures and in verifying the integrity of messages, e.g. by providing a way to ensure digital files have not been modified [1]. Just some of the many other real-world use cases of hash functions include the Git revision control system, which uses them to identify files being tracked in a repository [1]. Meanwhile SHA-512's sibling algorithm, SHA-256, is used in popular authentication and encryption protocols, including SSL, TLS, IPsec, SSH, and PGP [4]. In Linux systems, SHA-256 is also used for hashing passwords, while cryptocurrencies like Bitcoin use it for verifying transactions [4].
 
 ## Q & A
 
 ### _Why can't we reverse the SHA512 algorithm to retrieve the original message from a hash digest?_
 
-One of the main distinctions between hashing and encryption is reversibility. Encryption algorithms often require both an input as well as a key in order to generate the output (or ciphertext). This process is reversible as anyone able to obtain the key will also be able to decrypt the ciphertext and therein view the original message [4]. In contrast, SHA-512, like all algorithms specified in NIST FIPS 180-4 are "one-way hash functions" [5]. It is therefore not required for the specific hash algorithm used to be kept secret because the digest cannot be converted back to its original form [4]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, hash algorithms like SHA-512 are still susceptible to collisions - where two messages produce the same hash.
+One of the main distinctions between hashing and encryption is reversibility. Encryption algorithms often require both an input as well as a key in order to generate the output (or ciphertext). This process is reversible as anyone able to obtain the key will also be able to decrypt the ciphertext and therein view the original message [5]. In contrast, SHA-512, like all algorithms specified in NIST FIPS 180-4 are "one-way hash functions" [6]. It is therefore not required for the specific hash algorithm used to be kept secret because the digest cannot be converted back to its original form [5]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, hash algorithms like SHA-512 are still susceptible to collisions - where two messages produce the same hash.
 
 A central characteristic of any secure hash function like SHA-512 is that of "preimage resistance", also referred to as "one-wayness". This means that for any given hash, it must be computationally infeasible to find a message that will produce the same hash output [2]. Meanwhile, a second property of hash functions is that of "second preimage resistance", also referred to as (weak) collision resistance. This means that for hash algorithms like SHA-512, it should be infeasible to create two distinct plaintext messages that produce the exact same digest [2]. These are crucial characteristics of hash algorithms as they are widely used for verifying digital files and deriving cryptographic keys. If a bad actor were able to feasibly construct a message that produces the same hash output, they could perform substitution attacks, replacing a file with another malicious file that produces the same digest [2].
 
@@ -174,13 +174,13 @@ Although as mentioned previously it takes an average of 10 minutes for one of th
 
 2. Christof Paar and Jan Pelzl. _Understanding cryptography: a textbook for students and practitioners_. Chapter 11 – Hash Functions. Springer Science & Business Media, 2009, ISBN: 978-3-642-04101-3. DOI: [10.1007/978-3-642-04101-3](https://doi.org/10.1007/978-3-642-04101-3).
 
-3. [_SHA-256 Algorithm Overview_](https://www.solarwindsmsp.com/blog/sha-256-encryption). SolarWinds MSP. 12 Sep, 2019.
+3. [_Secure Hash Algorithms_](https://brilliant.org/wiki/secure-hashing-algorithms/). Brilliant.
 
-4. [_Hashing explained: Why it's your best bet to protect stored passwords_](https://www.csoonline.com/article/3602698/hashing-explained-why-its-your-best-bet-to-protect-stored-passwords.html). CSO Online. Lucian Constantin. Jan 13, 2021.
+4. [_SHA-256 Algorithm Overview_](https://www.solarwindsmsp.com/blog/sha-256-encryption). SolarWinds MSP. 12 Sep, 2019.
 
-5. Quynh H. Dang. _Secure Hash Standard_. Federal Inf. Process. Stds. (NIST FIPS) - 180-4. Gaithersburg, MD: US Department of Commerce, National Institute of Standards and Technology, Aug. 2015. DOI: [10.6028/NIST.FIPS.180-4](https://doi.org/10.6028/NIST.FIPS.180-4).
+5. [_Hashing explained: Why it's your best bet to protect stored passwords_](https://www.csoonline.com/article/3602698/hashing-explained-why-its-your-best-bet-to-protect-stored-passwords.html). CSO Online. Lucian Constantin. Jan 13, 2021.
 
-6. [_Secure Hash Algorithms_](https://brilliant.org/wiki/secure-hashing-algorithms/). Brilliant.
+6. Quynh H. Dang. _Secure Hash Standard_. Federal Inf. Process. Stds. (NIST FIPS) - 180-4. Gaithersburg, MD: US Department of Commerce, National Institute of Standards and Technology, Aug. 2015. DOI: [10.6028/NIST.FIPS.180-4](https://doi.org/10.6028/NIST.FIPS.180-4).
 
 7. [_Why haven't any SHA-256 collisions been found yet?_](https://crypto.stackexchange.com/a/47810). user47922. StackExchange Cryptography. May 29 2017.
 
