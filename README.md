@@ -81,7 +81,7 @@ As a result of this property, hash functions like SHA-512 have found important a
 
 ## Q & A
 
-**_Why can't we reverse the SHA512 algorithm to retrieve the original message from a hash digest?_**
+### _Why can't we reverse the SHA512 algorithm to retrieve the original message from a hash digest?_
 
 One of the main distinctions between hashing and encryption is reversibility. Encryption algorithms often require both an input as well as a key in order to generate the output (or ciphertext). This process is reversible as anyone able to obtain the key will also be able to decrypt the ciphertext and therein view the original message [4]. In contrast, SHA-512, like all algorithms specified in NIST FIPS 180-4 are "one-way hash functions" [5]. It is therefore not required for the specific hash algorithm used to be kept secret because the digest cannot be converted back to its original form [4]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, hash algorithms like SHA-512 are still susceptible to collisions - where two messages produce the same hash.
 
@@ -89,7 +89,7 @@ A central characteristic of any secure hash function like SHA-512 is that of "pr
 
 It is not possible to design a hash function that is fully resistant to collisions. This is because the input to a hash function is theoretically infinite, while the digest will always be the same length. For this reason, it must be true that multiple inputs will inevitably produce the same hash value [2]. This is illustrated by the _Pigeonhole Principle_, which states that if a pigeon loop were to contain 100 birds but only 99 holes, at least one hole must be occupied by two birds [2]. Because every hash algorithm produces an output with a fixed number of bits (**_n_**), there are 2<sup>_n_</sup> possible digests that can be computed by that algorithm, while there is an infinite number of possible inputs [2] (in the case of SHA-512 there are 2<sup>512</sup> possible outputs). In other words, there are an infinite number of possible inputs that can produce the same output. Because of this, even given unlimited computing power it is not possible to retrieve the _exact_ message that produced a given hash value as there are so many inputs that could produce the same hash [1]. It would of course be possible to determine _some_ possible messages that produce that hash (i.e. collisions), given enough time and resources, but it would not be possible to determine precisely what input was fed to the algorithm originally [1].
 
-**_Can you design an algorithm that, given enough time, will find input messages that give each of the possible 512-bit strings?_**
+### _Can you design an algorithm that, given enough time, will find input messages that give each of the possible 512-bit strings?_
 
 As mentioned previously, secure hash algorithms should be "preimage resistant". A preimage of a given hash value (**_H_**), is any message (**_M_**) that when run through the hash algorithm will produce the value of **_H_** [1]. In other words, a preimage is any message wherein `Hash(M) == H` [1]. Preimages are distinct from collisions, which is where two distinct input messages produce the same hash.
 
@@ -148,25 +148,25 @@ int main(void)
 
 However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>_L_</sup> evaluations, where **_L_** is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find even just a single an input message, as explained in [7]. (Although one should note that that particular example involved _collision attacks_ on SHA-256; preimage attacks on SHA-512 would take a considerably longer amount of time.)
 
-**_How difficult is it to find a hash digest beginning with at least twelve zeros?_**
+### _How difficult is it to find a hash digest beginning with at least twelve zeros?_
 
 The occurance of leading zeros in hash digests has particular significance in the area of mining cryptocurrencies, like Bitcoin.
 
-In Bitcoin mining, individuals called "miners" compete to find a new block in the blockchain. Each block contains a header, which in turn contains a target hash. The objective of the mining process is to add a random value (called a "nonce") to the header of the current block and then calculate its SHA-256 hash [10]. The process is repeated using a brute-force technique wherein the value of the nonce is continuously altered until eventually the hash digest produced is less than the target hash for that block [8, 10].
+In Bitcoin mining, individuals called "miners" compete to find a new block in the blockchain. Each block contains a header, which in turn contains a target hash. The objective of the mining process is to add a random value (called a "nonce") to the header of the current block and then calculate its SHA-256 hash [10]. The process is repeated using a brute-force technique wherein the value of the nonce is continuously altered until eventually the hash digest produced is smaller than the value of the target hash for that block [8,10].
 
 Because in the Bitcoin blockchain it is a requirement that each block take about 10 minutes to be mined [8], in order to ensure this remains constant the so-called difficulty level is periodically adjusted by either increasing or decreasing the number of leading zeros in the target hash of a given block [8]. The entire mining process is significantly difficult due to both the length of time and the amount of processing power required, an issue that becomes more apparant as more leading zeros are present in the target hash.
 
-In [9] the author uses a Python script in order to demonstrate how the time to generate a hash with a given number of leading zeros rapidly increases as more leading zeros are added to the target hash. On just a laptop, generating a hash with 7 leading zeros took took about 16 minutes and 675 million iterations. At the time that article was written, the Bitcoin difficulty level required 19 leading zeros, with miners collectively calculating 117 Exahashes per second (one Exahash is 1,000,000,000,000,000,000) [9]. Today Bitcoin miners are collectively calculating at a rate of over 163 Exahashes per second (see below) [13].
+In [9] the author uses a Python script in order to demonstrate how the time to generate an acceptable hash rapidly increases as more leading zeros are added to the target hash. Using just a laptop, generating a hash with 7 leading zeros took about 16 minutes and 675 million iterations. At the time that article was written, the Bitcoin difficulty level required 19 leading zeros, with miners collectively calculating 117 Exahashes per second (one Exahash is 1,000,000,000,000,000,000) [9]. Today Bitcoin miners are collectively calculating at a rate of over 163 Exahashes per second (see below) [13].
 
 ![hash-rate](https://user-images.githubusercontent.com/37158241/112484796-2a46c000-8d72-11eb-8293-b56d9af5acba.png)
 
-At the time [12] was written in 2014, a successful hash would have needed to start with 17 zeros, meaning just one out of 1.4x10<sup>20</sup> hashes would be successful. Finding such a hash would be more difficult than finding a particular grain of sand out of all the grains of sand on Earth [12]. Today, at the time of writing it is even harder as the latest Bitcoin block had a target hash consisting of 20 leading zeros and a difficulty level of about 21.866 trillion [11].
+When [12] was written in 2014, a successful hash would have needed to start with 17 zeros, meaning just one out of 1.4x10<sup>20</sup> hashes would be successful. Finding such a hash would be more difficult than finding a particular grain of sand out of all the grains of sand on Earth [12]. Today, at the time of writing it is even harder as the latest Bitcoin block had a target hash consisting of 20 leading zeros and a difficulty level of about 21.866 trillion [11].
 
 ```
 00000000000000000000edfc2d32a0d6302c200b34d195afa1588d4f61789e5a
 ```
 
-Although as mentioned previously it takes an average of 10 minutes for one of the miners in the network to discover a block, calculating a hash like the one above requires significant computataional power and miners therefore generally require specialised equipment in order to be successful.
+Although as mentioned previously it takes an average of 10 minutes for one of the miners in the network to discover a block, calculating a hash like the one above requires significant computataional power and miners therefore generally require specialised hardware in order to be successful [9].
 
 ## References
 
@@ -194,4 +194,4 @@ Although as mentioned previously it takes an average of 10 minutes for one of th
 
 12. [_Mining Bitcoin with pencil and paper: 0.67 hashes per day_](http://www.righto.com/2014/09/mining-bitcoin-with-pencil-and-paper.html). Ken Shirriff's blog. Ken Shirriff. Sep, 2014.
 
-13. [_Total Hash Rate (TH/s)_](https://www.blockchain.com/charts/hash-rate). Blockchain<span></span>.com.
+13. [_Total Hash Rate (TH/s)_](https://www.blockchain.com/charts/hash-rate). Accessed 25/03/2021. Blockchain<span></span>.com.
