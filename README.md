@@ -150,7 +150,23 @@ However, this sort of brute force attack wherein we try as many possible inputs 
 
 **_How difficult is it to find a hash digest beginning with at least twelve zeros?_**
 
-The occurance of leading zeros in hash digests has particular significance in the area of cryptocurrency mining. The criteria for determining the validity of a new block in the blockchain can be determined by the number of leading zeros present in the hash of that block [8]. Miners can make a block satisfy this criteria by using a brute-force technique wherein they will alter the value of the nonce until the hash digest produced satisfies the requirements [8]. This process is difficult due to both the length of time and the amount of processing power needed, an issue that becomes more apparant as more and more leading zeros are required,
+The occurance of leading zeros in hash digests has particular significance in the area of mining cryptocurrencies, like Bitcoin.
+
+In Bitcoin mining, individuals called "miners" compete to find a new block in the blockchain. Each block contains a header, which in turn contains a target hash. The objective of the mining process is to add a random value (called a "nonce") to the header of the current block and then calculate its SHA-256 hash [10]. The process is repeated using a brute-force technique wherein the value of the nonce is continuoslt altered until eventually the hash digest produced is less than the target hash for that block [8, 10].
+
+Because in the Bitcoin blockchain it is a requirement that each block take about 10 minutes to be mined [8], in order to ensure this the so-called difficulty level is periodically adjusted by either increasing or decreasing the number of leading zeros in the hash of a given block [8]. This entire process is difficult due to both the length of time and the amount of processing power needed, an issue that becomes more apparant as more and more leading zeros are present in the target hash.
+
+In [9] the author uses a Python script in order to demonstrate how difficulty increases as more leading zeros are added to the target hash. On a laptop, generating a hash with 7 leading zeros took took about 16 minutes and 675 million iterations. At the time this article was written, the difficulty level required 19 leading zeros with miners collectively calculating 117 Exahashes per second (one Exahash is 1,000,000,000,000,000,000) [9]. Today Bitcoin miners are collectively calculating over 163 Exahashes per second (see below).
+
+![hash-rate](https://user-images.githubusercontent.com/37158241/112484796-2a46c000-8d72-11eb-8293-b56d9af5acba.png)
+
+At the time [12] was written (2014) a successful hash would have needed to start with 17 zeros, meaning one out of 1.4x10<sup>20</sup> hashes would be successful. Finding such a hash would be more difficult than finding a particular grain of sand out of all the grains of sand on Earth [12]. Today, at the time of writing it is even more difficult. The latest Bitcoin block had a target hash consisting of 20 leading zeros and a difficulty level of about 21.866 trillion [11].
+
+```
+00000000000000000000edfc2d32a0d6302c200b34d195afa1588d4f61789e5a
+```
+
+Although as mentioned previously it takes an average of 10 minutes for one of the miners in the network to discover a block, calculating a hash like the one above is extremely difficult and miners generally require specialised equipment in order to be successful.
 
 ## References
 
@@ -169,3 +185,11 @@ The occurance of leading zeros in hash digests has particular significance in th
 7. [_Why haven't any SHA-256 collisions been found yet?_](https://crypto.stackexchange.com/a/47810). user47922. StackExchange Cryptography. May 29 2017.
 
 8. [_Introduction to Blockchain_](https://medium.com/@zaid960928/introduction-to-blockchain-ad0ab0628c15). Zaid Khaishagi. Jun 16, 2018.
+
+9. [_Bitcoin Proof of Work_](https://creativedata.stream/bitcoin-proof-of-work/). Bob Peers. May 11, 2020.
+
+10. [_How Bitcoin mining really works_](https://www.freecodecamp.org/news/how-bitcoin-mining-really-works-38563ec38c87/). Subhan Nadeem. freeCodeCamp. May 31, 2018.
+
+11. [_Block 676248_](https://www.blockchain.com/btc/block/00000000000000000000edfc2d32a0d6302c200b34d195afa1588d4f61789e5a). Blockchain<span></span>.com.
+
+12. [_Mining Bitcoin with pencil and paper: 0.67 hashes per day_](http://www.righto.com/2014/09/mining-bitcoin-with-pencil-and-paper.html). Ken Shirriff's blog. Ken Shirriff. Sep, 2014.
