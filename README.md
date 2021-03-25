@@ -150,6 +150,8 @@ However, this sort of brute force attack wherein we try as many possible inputs 
 
 **_How difficult is it to find a hash digest beginning with at least twelve zeros?_**
 
+The occurance of leading zeros in hash digests has particular significance in the area of cryptocurrency mining. The criteria for determining the validity of a new block in the blockchain can be determined by the number of leading zeros present in the hash of that block [8]. Miners can make a block satisfy this criteria by using a brute-force technique wherein they will alter the value of the nonce until the hash digest produced satisfies the requirements [8]. This process is difficult due to both the length of time and the amount of processing power needed, an issue that becomes more apparant as more and more leading zeros are required,
+
 ## References
 
 1. Jean-Philippe Aumasson. _Serious cryptography: a practical introduction to modern encryption_. Chapter 6 – Hash Functions. No Starch Press, 2017. ISBN: 978-1-59327-826-7.
@@ -165,3 +167,5 @@ However, this sort of brute force attack wherein we try as many possible inputs 
 6. [_Secure Hash Algorithms_](https://brilliant.org/wiki/secure-hashing-algorithms/). Brilliant.
 
 7. [_Why haven't any SHA-256 collisions been found yet?_](https://crypto.stackexchange.com/a/47810). user47922. StackExchange Cryptography. May 29 2017.
+
+8. [_Introduction to Blockchain_](https://medium.com/@zaid960928/introduction-to-blockchain-ad0ab0628c15). Zaid Khaishagi. Jun 16, 2018.
