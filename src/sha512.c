@@ -3,6 +3,7 @@
 #include <string.h>
 #include <byteswap.h>
 
+#include "utils.h"
 #include "sha512.h"
 
 const int _i = 1;
@@ -48,7 +49,7 @@ char* sha512(FILE* file)
     int next;
     while ((next = next_block(file, &M, &S, &numBits)) != 0) {
         if (next == -1) {
-            fprintf(stderr, "%s", "[Error] Failed to read anything from that file.\n");
+            fprintf(stderr, "%s", RED("[Error] Failed to read anything from that file.\n"));
             exit(EXIT_FAILURE);
         }
         next_hash(&M, H);

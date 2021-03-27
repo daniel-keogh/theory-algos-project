@@ -30,10 +30,11 @@ $ ./sha512 [options]
 
 ### Options
 
-| Option              | Description             |
-| ------------------- | ----------------------- |
-| `-h, --help`        | Prints some help text.  |
-| `-f, --file <file>` | Path to the input file. |
+| Option                | Description                       |
+| --------------------- | --------------------------------- |
+| `-h, --help`          | Prints some help text.            |
+| `-f, --file <file>`   | Path to the input file.           |
+| `-v, --verify <hash>` | Verify a file has the given hash. |
 
 #### Example
 
