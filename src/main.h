@@ -2,16 +2,22 @@
 #define MAIN_H_INCLUDED
 
 /* Command line option string. */
-#define OPTS "f:v:h"
+#define OPTS "c:v:h"
 
  /* Options passed through the CLI. */
 struct Options {
-    char* filename;
-    char* target;
+    char* inputFile;
+    char* targetHash;
+    char* targetFile;
 };
 
 /* Parse the user's provided command-line arguments. */
 void parse_opts(int argc, char* argv[], struct Options* options);
+
+/* Checks if `path` points to a file and if so, allocates it to `dest`.
+ * Quits the program if the file is not accessible.
+*/
+void try_set_file(const char* path, char** dest);
 
 /* Opens the file with the given path and returns a pointer to it. */
 FILE* open_file(const char* filename);

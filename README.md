@@ -25,21 +25,21 @@ After cloning the repository, you can then compile and run the program as follow
 
 ```sh
 $ make
-$ ./sha512 [options]
+$ ./sha512 FILE [OPTIONS]
 ```
 
 ### Options
 
-| Option                | Description                       |
-| --------------------- | --------------------------------- |
-| `-h, --help`          | Prints some help text.            |
-| `-f, --file <file>`   | Path to the input file.           |
-| `-v, --verify <hash>` | Verify a file has the given hash. |
+| Option                 | Description                                                         |
+| ---------------------- | ------------------------------------------------------------------- |
+| `-h, --help`           | Prints some help text.                                              |
+| `-c, --compare <file>` | Path to a file, whose hash will be compared against the input file. |
+| `-v, --verify <hash>`  | Verify the input file has the given hash.                           |
 
 #### Example
 
 ```sh
-$ ./sha512 -f input.txt
+$ ./sha512 input.txt
 ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f
 ```
 

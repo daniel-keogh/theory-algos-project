@@ -12,18 +12,27 @@
 int main(int argc, char* argv[])
 {
     struct Options options = {
-        .filename = NULL,
-        .target = NULL
+        .inputFile = NULL,
+        .targetHash = NULL,
+        .targetFile = NULL,
     };
 
     parse_opts(argc, argv, &options);
 
-    FILE* pfile = open_file(options.filename);
-
+    // Get the result of the input file
+    FILE* pfile = open_file(options.inputFile);
     char* result = sha512(pfile);
 
-    if (options.target != NULL) {
-        verify(result, options.target);
+    if (options.targetFile != NULL) {
+        // Compare against the target file
+        FILE* ptargetFile = open_file(options.targetFile);
+        char* targetFileResult = sha512(ptargetFile);
+
+        verify(result, targetFileResult);
+    }
+    else if (options.targetHash != NULL) {
+        // Compare against the target hash
+        verify(result, options.targetHash);
     }
     else {
         puts(result);
@@ -36,11 +45,18 @@ int main(int argc, char* argv[])
 
 void parse_opts(int argc, char* argv[], struct Options* options)
 {
-    // Parse user command line args using getopt_long()
+    // The first argument should be the input file (or "--help")
+    if (argc > 1) {
+        if (strcmp(argv[1], "--help") != 0) {
+            try_set_file(argv[1], &options->inputFile);
+        }
+    }
+
+    // Parse remaining user command line args using getopt_long()
     // Reference: <https://www.gnu.org/software/libc/manual/html_node/Getopt-Long-Option-Example.html>
     static struct option cliOptions[] = {
         {"help", no_argument, 0, 'h'},
-        {"file", required_argument, 0, 'f'},
+        {"compare", required_argument, 0, 'c'},
         {"verify", required_argument, 0, 'v'},
         {0, 0, 0, 0}
     };
@@ -50,21 +66,12 @@ void parse_opts(int argc, char* argv[], struct Options* options)
 
     while ((opt = getopt_long(argc, argv, OPTS, cliOptions, &optIndex)) != -1) {
         switch (opt) {
-            case 'f':
-                // Check if the file is readable
-                // Reference: <https://stackoverflow.com/a/230068>
-                if (access(optarg, R_OK) != -1) {
-                    options->filename = malloc(sizeof(char) * (strlen(optarg) + 1));
-                    strcpy(options->filename, optarg);
-                }
-                else {
-                    fprintf(stderr, RED("[Error] File: \"%s\" not found.\n"), optarg);
-                    exit(EXIT_FAILURE);
-                }
+            case 'c':
+                try_set_file(optarg, &options->targetFile);
                 break;
             case 'v':
-                options->target = malloc(sizeof(char) * (strlen(optarg) + 1));
-                strcpy(options->target, optarg);
+                options->targetHash = malloc(sizeof(char) * (strlen(optarg) + 1));
+                strcpy(options->targetHash, optarg);
                 break;
             case 'h':
                 usage(argv[0]);
@@ -74,10 +81,24 @@ void parse_opts(int argc, char* argv[], struct Options* options)
         }
     }
 
-    // Make sure a file was given
-    if (options->filename == NULL) {
+    // Make sure an input file was given
+    if (options->inputFile == NULL) {
         fprintf(stderr, "%s", RED("[Error] No input file specified.\n"));
         usage(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+}
+
+void try_set_file(const char* path, char** dest)
+{
+    // Check if the file is readable
+    // Reference: <https://stackoverflow.com/a/230068>
+    if (access(path, R_OK) != -1) {
+        *dest = malloc(sizeof(char) * (strlen(path) + 1));
+        strcpy(*dest, path);
+    }
+    else {
+        fprintf(stderr, RED("[Error] File: \"%s\" not found.\n"), path);
         exit(EXIT_FAILURE);
     }
 }
@@ -109,9 +130,9 @@ void verify(const char* result, const char* target)
 
 void usage(const char* exec)
 {
-    printf("Usage: %s [options]\n\n", exec);
+    printf("Usage: %s FILE [OPTIONS]\n\n", exec);
     printf("%s", "Options:\n");
     printf("%s", "  -h, --help\t\t\tPrints some help text.\n");
-    printf("%s", "  -f, --file <file>\t\tPath to the input file.\n");
-    printf("%s", "  -v, --verify <hash>\t\tVerify a file has the given hash.\n");
+    printf("%s", "  -c, --compare <file>\t\tPath to a file, whose hash will be compared against the input file.\n");
+    printf("%s", "  -v, --verify <hash>\t\tVerify the input file has the given hash.\n");
 }
