@@ -133,6 +133,6 @@ void usage(const char* exec)
     printf("Usage: %s FILE [OPTIONS]\n\n", exec);
     printf("%s", "Options:\n");
     printf("%s", "  -h, --help\t\t\tPrints some help text.\n");
-    printf("%s", "  -c, --compare <file>\t\tPath to a file, whose hash will be compared against the input file.\n");
+    printf("%s", "  -c, --compare <file>\t\tSpecify a file to compare against the input file.\n");
     printf("%s", "  -v, --verify <hash>\t\tVerify the input file has the given hash.\n");
 }
