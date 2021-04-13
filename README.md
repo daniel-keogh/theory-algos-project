@@ -30,11 +30,11 @@ $ ./sha512 FILE [OPTIONS]
 
 ### Options
 
-| Option                 | Description                                       |
-| ---------------------- | ------------------------------------------------- |
-| `-h, --help`           | Prints some help text.                            |
-| `-c, --compare <file>` | Specify a file to compare against the input file. |
-| `-v, --verify <hash>`  | Verify the input file has the given hash.         |
+| Option                 | Description                                           |
+| ---------------------- | ----------------------------------------------------- |
+| `-h, --help`           | Print program usage information.                      |
+| `-c, --compare <file>` | Compare another file's hash against the input file's. |
+| `-v, --verify <hash>`  | Verify the input file has the given hash.             |
 
 #### Example
 
@@ -88,7 +88,7 @@ As a result of this property, hash functions like SHA-512 have found important a
 
 ### _Why can't we reverse the SHA512 algorithm to retrieve the original message from a hash digest?_
 
-One of the main distinctions between hashing and encryption is reversibility. Encryption algorithms typically require both an input as well as a key in order to generate the output (or ciphertext). This process is reversible as anyone able to obtain the key will also be able to decrypt the ciphertext and therein view the original message [5]. In contrast, SHA-512, like all algorithms specified in NIST FIPS 180-4 are "one-way hash functions" [6]. It is therefore not required for the specific hash algorithm used to be kept secret because the digest cannot be converted back to its original form [5]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, the original message can still be retrieved as hash algorithms like SHA-512 are susceptible to _collisions_ – where two messages produce the same hash.
+One of the main distinctions between hashing and encryption is reversibility. Encryption algorithms typically require both an input as well as a key in order to generate the output (or ciphertext). This process is reversible as anyone able to obtain the key will also be able to decrypt the ciphertext and thereby view the original message [5]. In contrast, SHA-512, like all algorithms specified in NIST FIPS 180-4 are "one-way hash functions" [6]. It is therefore not required for the specific hash algorithm used to be kept secret because the digest cannot be converted back to its original form [5]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, the original message can still be retrieved as hash algorithms like SHA-512 are susceptible to _collisions_ – where two messages produce the same hash.
 
 A central characteristic of any secure hash function is that of "preimage resistance", also referred to as "one-wayness". This means that for any given hash, it must be computationally infeasible to find a message that will produce the same hash output [2]. Meanwhile, a second property of hash functions is that of "second preimage resistance", also referred to as (weak) collision resistance. This means that for hash algorithms like SHA-512, it should be infeasible to create two distinct plaintext messages that produce the exact same digest [2]. These are crucial characteristics of hash algorithms as they are widely used for verifying digital files and deriving cryptographic keys. If a bad actor were able to feasibly construct a message that produces the same hash output as a given file, they could perform substitution attacks, replacing the file with another malicious file that produces the same digest [2].
 

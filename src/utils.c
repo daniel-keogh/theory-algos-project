@@ -8,7 +8,7 @@ FILE* open_file(const char* filename)
     FILE* pFile;
 
     if ((pFile = fopen(filename, "r")) == NULL) {
-        fprintf(stderr, "%s", RED("[Error] Failed to open the input file."));
+        fprintf(stderr, RED("[Error] Failed to open file: \"%s\"\n"), filename);
         exit(EXIT_FAILURE);
     }
 
