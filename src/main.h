@@ -19,6 +19,9 @@ void parse_opts(int argc, char* argv[], struct Options* options);
 */
 void try_set_file(const char* path, char** dest);
 
+/* Opens the file at the given path and returns its SHA-512 digest. */
+char* compute_hash(const char* file);
+
 /* Verify whether or not two hashes are the same string. */
 void verify(const char* result, const char* target);
 

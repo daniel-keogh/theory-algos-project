@@ -20,30 +20,20 @@ int main(int argc, char* argv[])
     parse_opts(argc, argv, &options);
 
     // Get the result of the input file
-    FILE* pfile = open_file(options.inputFile);
-    char* result = sha512(pfile);
-
-    if (result == NULL) {
-        fprintf(stderr, "%s", RED("[Error] Failed to read anything from that file.\n"));
-        return EXIT_FAILURE;
-    }
+    char* result = compute_hash(options.inputFile);
 
     if (options.targetFile != NULL) {
-        // Compare against the target file
-        FILE* ptargetFile = open_file(options.targetFile);
-        char* targetFileResult = sha512(ptargetFile);
-
+        // Compare the input file against the target file
+        char* targetFileResult = compute_hash(options.targetFile);
         verify(result, targetFileResult);
     }
     else if (options.targetHash != NULL) {
-        // Compare against the target hash
+        // Compare the input file against the target hash
         verify(result, options.targetHash);
     }
     else {
         puts(result);
     }
-
-    fclose(pfile);
 
     return EXIT_SUCCESS;
 }
@@ -106,6 +96,21 @@ void try_set_file(const char* path, char** dest)
         fprintf(stderr, RED("[Error] File: \"%s\" not found.\n"), path);
         exit(EXIT_FAILURE);
     }
+}
+
+char* compute_hash(const char* file)
+{
+    FILE* pfile = open_file(file);
+    char* result = sha512(pfile);
+
+    fclose(pfile);
+
+    if (result == NULL) {
+        fprintf(stderr, RED("[Error] Failed to read anything from file: \"%s\"\n"), file);
+        exit(EXIT_FAILURE);
+    }
+
+    return result;
 }
 
 void verify(const char* result, const char* target)
