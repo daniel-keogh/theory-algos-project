@@ -1,18 +1,23 @@
 # Reference: https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
 CC=gcc
-CFLAGS=-std=c11
+CFLAGS=-std=c11 -I src
 
-# Executable
+# Executables
 EXEC=sha512
+EXEC_TEST=test.o
 
 # Directories
 SDIR=src
 ODIR=obj
+TEST_DIR=tests
 INS_DIR=/usr/local/bin
 
 # Object files
 OBJS=$(patsubst %,$(ODIR)/%,$(_OBJS))
 _OBJS=main.o sha512.o
+
+OBJS_TEST=$(patsubst %,$(ODIR)/%,$(_OBJS_TEST))
+_OBJS_TEST=test_sha512.o sha512.o
 
 all: init $(EXEC)
 	@echo "Build complete."
@@ -26,8 +31,15 @@ $(ODIR)/%.o: $(SDIR)/%.c
 $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
-test:
-	@echo "Not implemented"
+$(ODIR)/%.o: $(TEST_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(EXEC_TEST): $(OBJS_TEST)
+	$(CC) $(CFLAGS) -o $@ $^
+
+test: init $(EXEC_TEST)
+	./$(EXEC_TEST)
+	rm $(EXEC_TEST)
 
 install:
 	cp $(EXEC) $(INS_DIR)/
