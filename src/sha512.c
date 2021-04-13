@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h> 
 #include <byteswap.h>
 
 #include "utils.h"
@@ -49,8 +49,7 @@ char* sha512(FILE* file)
     int next;
     while ((next = next_block(file, &M, &S, &numBits)) != 0) {
         if (next == -1) {
-            fprintf(stderr, "%s", RED("[Error] Failed to read anything from that file.\n"));
-            exit(EXIT_FAILURE);
+            return NULL;
         }
         next_hash(&M, H);
     }

@@ -23,6 +23,11 @@ int main(int argc, char* argv[])
     FILE* pfile = open_file(options.inputFile);
     char* result = sha512(pfile);
 
+    if (result == NULL) {
+        fprintf(stderr, "%s", RED("[Error] Failed to read anything from that file.\n"));
+        return EXIT_FAILURE;
+    }
+
     if (options.targetFile != NULL) {
         // Compare against the target file
         FILE* ptargetFile = open_file(options.targetFile);
@@ -101,18 +106,6 @@ void try_set_file(const char* path, char** dest)
         fprintf(stderr, RED("[Error] File: \"%s\" not found.\n"), path);
         exit(EXIT_FAILURE);
     }
-}
-
-FILE* open_file(const char* filename)
-{
-    FILE* pFile;
-
-    if ((pFile = fopen(filename, "r")) == NULL) {
-        fprintf(stderr, "%s", RED("[Error] Failed to open the input file."));
-        exit(EXIT_FAILURE);
-    }
-
-    return pFile;
 }
 
 void verify(const char* result, const char* target)

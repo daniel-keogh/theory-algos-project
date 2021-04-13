@@ -19,9 +19,6 @@ void parse_opts(int argc, char* argv[], struct Options* options);
 */
 void try_set_file(const char* path, char** dest);
 
-/* Opens the file with the given path and returns a pointer to it. */
-FILE* open_file(const char* filename);
-
 /* Verify whether or not two hashes are the same string. */
 void verify(const char* result, const char* target);
 

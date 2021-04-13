@@ -14,10 +14,10 @@ INS_DIR=/usr/local/bin
 
 # Object files
 OBJS=$(patsubst %,$(ODIR)/%,$(_OBJS))
-_OBJS=main.o sha512.o
+_OBJS=main.o sha512.o utils.o
 
 OBJS_TEST=$(patsubst %,$(ODIR)/%,$(_OBJS_TEST))
-_OBJS_TEST=test_sha512.o sha512.o
+_OBJS_TEST=test_sha512.o sha512.o utils.o
 
 all: init $(EXEC)
 	@echo "Build complete."
@@ -39,7 +39,7 @@ $(EXEC_TEST): $(OBJS_TEST)
 
 test: init $(EXEC_TEST)
 	./$(EXEC_TEST)
-	rm $(EXEC_TEST)
+	@rm $(EXEC_TEST)
 
 install:
 	cp $(EXEC) $(INS_DIR)/

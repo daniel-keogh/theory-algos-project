@@ -44,7 +44,9 @@ enum Status {
     END
 };
 
-/* Computes the SHA-512 digest of a file. */
+/* Computes the SHA-512 digest of a file.
+ * Returns NULL if the file is empty.
+ */
 char* sha512(FILE* file);
 
 /* Returns 1 if a new block was created from the original message or padding.
