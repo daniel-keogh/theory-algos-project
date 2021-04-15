@@ -37,7 +37,7 @@ void test_correct()
 
     char* expected = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f";
 
-    FILE* pfile = open_file(PATH("abc.txt"));
+    FILE* pfile = try_open_file(PATH("abc.txt"));
     char* result = sha512(pfile);
     fclose(pfile);
 
@@ -53,11 +53,11 @@ void test_distinct()
 
     char* expected = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f";
 
-    FILE* pfile_a = open_file(PATH("abc.txt"));
+    FILE* pfile_a = try_open_file(PATH("abc.txt"));
     char* result_a = sha512(pfile_a);
     fclose(pfile_a);
 
-    FILE* pfile_b = open_file(PATH("def.txt"));
+    FILE* pfile_b = try_open_file(PATH("def.txt"));
     char* result_b = sha512(pfile_b);
     fclose(pfile_b);
 
@@ -71,7 +71,7 @@ void test_empty_file()
 {
     printf(YELLOW("test_empty_file..."));
 
-    FILE* pfile = open_file(PATH("empty.txt"));
+    FILE* pfile = try_open_file(PATH("empty.txt"));
     char* result = sha512(pfile);
     fclose(pfile);
 
@@ -85,7 +85,7 @@ void test_not_empty()
 {
     printf(YELLOW("test_not_empty..."));
 
-    FILE* pfile = open_file(PATH("abc.txt"));
+    FILE* pfile = try_open_file(PATH("abc.txt"));
     char* result = sha512(pfile);
     fclose(pfile);
 
@@ -99,7 +99,7 @@ void test_hash_length()
 {
     printf(YELLOW("test_hash_length..."));
 
-    FILE* pfile = open_file(PATH("abc.txt"));
+    FILE* pfile = try_open_file(PATH("abc.txt"));
     char* result = sha512(pfile);
     fclose(pfile);
 

@@ -10,7 +10,9 @@
 #define YELLOW(s)       "\033[0;33m" s RESET
 #define BLUE(s)         "\033[0;34m" s RESET
 
-/* Opens the file with the given path and returns a pointer to it. */
-FILE* open_file(const char* filename);
+/* Opens the file with the given path and returns a pointer to it.
+ * Exits if the file cannot be opened.
+*/
+FILE* try_open_file(const char* filename);
 
 #endif

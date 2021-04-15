@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-FILE* open_file(const char* filename)
+FILE* try_open_file(const char* filename)
 {
     FILE* pFile;
 

@@ -100,7 +100,7 @@ void try_set_file(const char* path, char** dest)
 
 char* compute_hash(const char* file)
 {
-    FILE* pfile = open_file(file);
+    FILE* pfile = try_open_file(file);
     char* result = sha512(pfile);
 
     fclose(pfile);

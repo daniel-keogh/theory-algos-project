@@ -39,7 +39,7 @@ $(EXEC_TEST): $(OBJS_TEST)
 
 test: init $(EXEC_TEST)
 	./$(EXEC_TEST)
-	@rm $(EXEC_TEST)
+	rm $(EXEC_TEST)
 
 install:
 	cp $(EXEC) $(INS_DIR)/
@@ -49,4 +49,4 @@ uninstall:
 
 clean:
 	rm -rf $(ODIR)/
-	rm $(EXEC)
+	rm -f $(EXEC)
