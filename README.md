@@ -6,6 +6,25 @@ Y4S2 Theory of Algorithms Project
 
 A C program that calculates & outputs the SHA-512 digest of a given input file, in accordance with the [NIST FIPS 180-4](https://doi.org/10.6028/NIST.FIPS.180-4) specification.
 
+### Folder Structure
+
+Below is a brief summary of this repository's contents.
+
+```sh
+$ tree -P *.[ch]
+.
+├── src
+│   ├── main.c          # Main program entry point.
+│   ├── main.h
+│   ├── sha512.c        # SHA-512 implementation.
+│   ├── sha512.h
+│   ├── utils.c         # Utilty functions.
+│   └── utils.h
+└── tests
+    ├── files
+    └── test_sha512.c   # Test entry point.
+```
+
 ## Compilation
 
 ### Prerequisites
@@ -54,17 +73,19 @@ To install the executable for system-wide use, you could run:
 ```sh
 $ make
 $ sudo make install
+cp sha512 /usr/local/bin/
 ```
 
 #### Uninstalling
 
 ```sh
 $ sudo make uninstall
+rm /usr/local/bin/sha512
 ```
 
 ## Testing
 
-You can test the program by running the following:
+Tests are located in the `tests/` directory and can be compiled & run as follows:
 
 ```sh
 $ make test
@@ -152,7 +173,7 @@ int main(void)
 }
 ```
 
-However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>_L_</sup> evaluations, where **_L_** is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find even just a single an input message, as explained in [7]. (Although one should note that that particular example involved _collision attacks_ on SHA-256; preimage attacks on SHA-512 would take a considerably longer amount of time.)
+However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>_L_</sup> evaluations, where **_L_** is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find even just a single input message, as explained in [7]. (Although one should note that that particular example involved _collision attacks_ on SHA-256; preimage attacks on SHA-512 would take a considerably longer amount of time.)
 
 ### _How difficult is it to find a hash digest beginning with at least twelve zeros?_
 
