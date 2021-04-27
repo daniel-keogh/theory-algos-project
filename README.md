@@ -8,22 +8,30 @@ A C program that calculates & outputs the SHA-512 digest of a given input file, 
 
 ### Folder Structure
 
-Below is a brief summary of this repository's contents.
+Below is a summary of this repository's contents.
 
 ```sh
 $ tree -P *.[ch]
 .
 ├── src
-│   ├── main.c          # Main program entry point.
-│   ├── main.h
-│   ├── sha512.c        # SHA-512 implementation.
-│   ├── sha512.h
-│   ├── utils.c         # Utilty functions.
-│   └── utils.h
+│   ├── main.c
+│   ├── main.h
+│   ├── sha512.c
+│   ├── sha512.h
+│   ├── utils.c
+│   └── utils.h
 └── tests
     ├── files
-    └── test_sha512.c   # Test entry point.
+    └── test_sha512.c
 ```
+
+| File(s)               | Description               |
+| --------------------- | ------------------------- |
+| `src/main.[ch]`       | Main program entry point. |
+| `src/sha512.[ch]`     | SHA-512 implementation.   |
+| `src/utils.[ch]`      | Utilty functions.         |
+| `tests/test_sha512.c` | Test entry point.         |
+| `tests/files`         | Test resource files.      |
 
 ## Compilation
 
@@ -135,7 +143,7 @@ char* find_preimage(const char* target)
         char* hash_m = sha512(m);
 
         if (strcasecmp(hash_m, target) == 0) {
-            return m; // found preimage
+            return m; // Found preimage
         }
     }
 }
@@ -153,17 +161,17 @@ In the code below, the `for` loop (in which the `find_preimage()` function is ca
 
 int main(void)
 {
-    // array of all SHA-512 output strings
+    // Array of all SHA-512 output strings
     char* targets[] = {
         "0000...",
         // ......,
         "ffff...",
     };
 
-    // the total number of hashes that can be produced by SHA-512 (2^512)
+    // The total number of hashes that can be produced by SHA-512 (2^512)
     uint64_t num_hashes = (uint64_t)pow(2, 512);
 
-    // for each hash in targets[], try and brute-force a preimage
+    // For each hash in targets[], try and brute-force a preimage
     for (int i = 0; i < num_hashes; i++) {
         char* result = find_preimage(targets[i]);
         puts(result);
@@ -173,7 +181,7 @@ int main(void)
 }
 ```
 
-However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>_L_</sup> evaluations, where **_L_** is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find even just a single input message, as explained in [7]. (Although one should note that that particular example involved _collision attacks_ on SHA-256; preimage attacks on SHA-512 would take a considerably longer amount of time.)
+However, this sort of brute force attack wherein we try as many possible inputs in order to find a message corresponding to a given digest would require 2<sup>_L_</sup> evaluations, where **_L_** is the length of the digest (for SHA-512 that is 512 bits) [6]. Such a technique can therefore be considered wildly impractical due to the length of time it would take to successfully find even just a single input message, as explained in [7]. (Although note that that particular example involved _collision attacks_ on SHA-256; preimage attacks on SHA-512 would take a considerably longer amount of time.)
 
 ### _How difficult is it to find a hash digest beginning with at least twelve zeros?_
 
@@ -209,7 +217,7 @@ Although as mentioned previously it takes an average of 10 minutes for one of th
 
 6. Quynh H. Dang. _Secure Hash Standard_. Federal Inf. Process. Stds. (NIST FIPS) - 180-4. Gaithersburg, MD: US Department of Commerce, National Institute of Standards and Technology, Aug. 2015. DOI: [10.6028/NIST.FIPS.180-4](https://doi.org/10.6028/NIST.FIPS.180-4).
 
-7. [_Why haven't any SHA-256 collisions been found yet?_](https://crypto.stackexchange.com/a/47810). user47922. StackExchange Cryptography. May 29 2017.
+7. [_Why haven't any SHA-256 collisions been found yet?_](https://crypto.stackexchange.com/a/47810). user47922. StackExchange Cryptography. May 29, 2017.
 
 8. [_How Bitcoin mining really works_](https://www.freecodecamp.org/news/how-bitcoin-mining-really-works-38563ec38c87/). Subhan Nadeem. freeCodeCamp. May 31, 2018.
 
