@@ -195,7 +195,7 @@ In [10] the author uses a Python script in order to demonstrate how the time to 
 
 ![hash-rate](https://user-images.githubusercontent.com/37158241/112484796-2a46c000-8d72-11eb-8293-b56d9af5acba.png)
 
-When [12] was written in 2014, a successful hash would have needed to start with 17 zeros, meaning just one out of 1.4x10<sup>20</sup> hashes would be successful. Finding such a hash would be more difficult than finding a particular grain of sand out of all the grains of sand on Earth [12]. Today, at the time of writing it is even harder as the latest recorded Bitcoin block had a target hash consisting of 20 leading zeros and a difficulty level of about 21.866 trillion [13].
+When [12] was written in 2014, a successful hash would have needed to start with 17 zeros, meaning just one out of 1.4x10<sup>20</sup> hashes would be successful. Finding such a hash would be more difficult than finding a particular grain of sand out of all the grains of sand on Earth [12]. Today, at the time of writing it is even harder as the latest recorded Bitcoin block (shown below) had a target hash consisting of 20 leading zeros and a difficulty level of about 21.866 trillion [13].
 
 ```
 00000000000000000000edfc2d32a0d6302c200b34d195afa1588d4f61789e5a
@@ -205,11 +205,11 @@ Although as mentioned previously it takes an average of 10 minutes for one of th
 
 ## References
 
-1. Jean-Philippe Aumasson. _Serious cryptography: a practical introduction to modern encryption_. Chapter 6 – Hash Functions. No Starch Press, 2017. ISBN: 978-1-59327-826-7.
+1. Jean-Philippe Aumasson. _Serious Cryptography: A Practical Introduction to Modern Encryption_. Chapter 6 – Hash Functions. No Starch Press, 2017. ISBN: 978-1-59327-826-7.
 
-2. Christof Paar and Jan Pelzl. _Understanding cryptography: a textbook for students and practitioners_. Chapter 11 – Hash Functions. Springer Science & Business Media, 2009, ISBN: 978-3-642-04101-3. DOI: [10.1007/978-3-642-04101-3](https://doi.org/10.1007/978-3-642-04101-3).
+2. Christof Paar and Jan Pelzl. _Understanding Cryptography: A Textbook for Students and Practitioners_. Chapter 11 – Hash Functions. Springer Science & Business Media, 2009, ISBN: 978-3-642-04101-3. DOI: [10.1007/978-3-642-04101-3](https://doi.org/10.1007/978-3-642-04101-3).
 
-3. [_Secure Hash Algorithms_](https://brilliant.org/wiki/secure-hashing-algorithms/). Brilliant.
+3. [_Secure Hash Algorithms_](https://brilliant.org/wiki/secure-hashing-algorithms/). Brilliant<span></span>.org.
 
 4. [_SHA-256 Algorithm Overview_](https://www.solarwindsmsp.com/blog/sha-256-encryption). SolarWinds MSP. 12 Sep, 2019.
 
@@ -225,8 +225,8 @@ Although as mentioned previously it takes an average of 10 minutes for one of th
 
 10. [_Bitcoin Proof of Work_](https://creativedata.stream/bitcoin-proof-of-work/). Bob Peers. May 11, 2020.
 
-11. [_Total Hash Rate (TH/s)_](https://www.blockchain.com/charts/hash-rate). Accessed 25/03/2021. Blockchain<span></span>.com.
+11. [_Total Hash Rate (TH/s)_](https://www.blockchain.com/charts/hash-rate). Accessed March 25, 2021. Blockchain<span></span>.com.
 
 12. [_Mining Bitcoin with pencil and paper: 0.67 hashes per day_](http://www.righto.com/2014/09/mining-bitcoin-with-pencil-and-paper.html). Ken Shirriff's blog. Ken Shirriff. Sep, 2014.
 
-13. [_Block 676248_](https://www.blockchain.com/btc/block/00000000000000000000edfc2d32a0d6302c200b34d195afa1588d4f61789e5a). Blockchain<span></span>.com.
+13. [_Block 676248_](https://www.blockchain.com/btc/block/00000000000000000000edfc2d32a0d6302c200b34d195afa1588d4f61789e5a). Blockchain<span></span>.com. March 25, 2021.
