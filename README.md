@@ -86,6 +86,8 @@ cp sha512 /usr/local/bin/
 
 #### Uninstalling
 
+Alternatively to uninstall, run the following:
+
 ```sh
 $ sudo make uninstall
 rm /usr/local/bin/sha512
@@ -119,15 +121,15 @@ As a result of this property, hash functions like SHA-512 have found important a
 
 One of the main distinctions between hashing and encryption is reversibility. Encryption algorithms typically require both an input as well as a key in order to generate the output (or ciphertext). This process is reversible as anyone able to obtain the key will also be able to decrypt the ciphertext and thereby view the original message [5]. In contrast, SHA-512, like all algorithms specified in NIST FIPS 180-4 are "one-way hash functions" [6]. It is therefore not required for the specific hash algorithm used to be kept secret because the digest cannot be converted back to its original form [5]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, the original message may still be retrieved as hash algorithms like SHA-512 are susceptible to _collisions_ – where two messages produce the same hash.
 
-A central characteristic of any secure hash function is that of "preimage resistance", also referred to as "one-wayness". This means that for any given hash, it must be computationally infeasible to find a message that will produce the same hash output [2]. Meanwhile, a second property of hash functions is that of "second preimage resistance", also referred to as (weak) collision resistance. This means that for hash algorithms like SHA-512, it should be infeasible to create two distinct plaintext messages that produce the exact same digest [2]. These are both crucial characteristics of hash algorithms, as they are widely used for verifying digital files. If a bad actor were able to feasibly construct a message that produces the same hash output as a given file, they could perform substitution attacks, replacing the file with another malicious file that produces the same digest [2].
+A central characteristic of any secure hash function is that of "preimage resistance", also referred to as "one-wayness". This means that for any given hash, it must be computationally infeasible to find a message that will produce the same hash output [2]. Meanwhile, another property of hash functions is "second preimage resistance", also referred to as (weak) collision resistance. This means that for hash algorithms like SHA-512, it should be infeasible to create two distinct plaintext messages that produce the exact same digest [2]. These are both crucial characteristics of hash algorithms as they are widely used for verifying digital files. If a bad actor were able to feasibly construct a message that produces the same hash output as a given file, they could perform substitution attacks, replacing the file with another malicious file that produces the same digest [2].
 
 It is not possible to design a hash function that is fully resistant to collisions. This is because the input to a hash function is theoretically infinite, while the digest will always be the same length. For this reason, it must be true that multiple inputs will inevitably produce the same hash value [2]. This is illustrated by the _Pigeonhole Principle_, which states that if a pigeon loop were to contain 100 birds but only 99 holes, at least one of the holes must be occupied by two birds [2]. Because every hash algorithm produces an output with a fixed number of bits (**_n_**), there are 2<sup>_n_</sup> possible digests that can be computed by that algorithm, while there is an infinite number of possible inputs [2] (in the case of SHA-512 there are 2<sup>512</sup> possible outputs). In other words, there are an infinite number of possible inputs that can produce the same output. Because of this, even given unlimited computing power it is not possible to retrieve the _exact_ message that produced a given hash value as there are so many inputs that could produce the same hash [1]. It would of course be possible to determine _some_ possible messages that produce that hash (i.e. collisions), given enough time and resources, but it would not be possible to determine precisely what input was fed to the algorithm originally [1].
 
 ### _Can you design an algorithm that, given enough time, will find input messages that give each of the possible 512-bit strings?_
 
-As mentioned previously, secure hash algorithms should be "preimage resistant". A preimage of a given hash value (**_H_**), is any message (**_M_**) that when run through the hash algorithm will produce the value of **_H_** [1]. In other words, a preimage is any message wherein `Hash(M) == H` [1]. Preimages are distinct from collisions, which is where two distinct input messages produce the same hash.
+As mentioned previously, secure hash algorithms should be "preimage resistant". A preimage of a given hash digest (**_H_**), is any message (**_M_**) that when run through the hash algorithm will produce the value of **_H_** [1]. In other words, a preimage is any message wherein `Hash(M) == H` [1]. Preimages are distinct from collisions, which is where two distinct input messages produce the same hash.
 
-If given a hash value, one can search for preimages using a brute force technique which involves continuously checking the hash output of different messages until eventually finding a message that produces the same output as the target hash. The below C code is adapted from the pseudo-code shown on page 174 of [1]. Here, the `find_preimage()` function takes a SHA-512 hash (called `target`) and will iteratively try to find the SHA-512 hash of a random plaintext message (`m`). It will then use `strcasecmp()` to check if the hash of that message (`hash_m`) equals the hash value passed into the function. If so, the function will return the matching input message (`m`), or otherwise continue looping until a match is eventually found.
+If given a hash value, one can search for preimages using a brute force technique which involves continuously checking the hash output of different messages until eventually finding a message that produces the same output as the target hash. The below C code is adapted from the pseudo-code shown on page 174 of [1]. Here, the `find_preimage()` function takes a SHA-512 hash (called `target`) and will iteratively attempt to find the SHA-512 hash of a random plaintext message (`m`). It will then use `strcasecmp()` to check if the hash of that message (`hash_m`) equals the hash value passed into the function. If so, the function will return the matching input message (`m`), or otherwise continue looping until a match is eventually found.
 
 ```c
 #include <stdio.h>
@@ -161,7 +163,7 @@ In the code below, the `for` loop (in which the `find_preimage()` function is ca
 
 int main(void)
 {
-    // Array of all SHA-512 output strings (shortened for brevity)
+    // Array of all possible SHA-512 output strings (shortened for brevity)
     char* targets[] = {
         "0000...",
         // ......,
@@ -195,7 +197,7 @@ In [10] the author uses a Python script in order to demonstrate how the time to 
 
 ![hash-rate](https://user-images.githubusercontent.com/37158241/112484796-2a46c000-8d72-11eb-8293-b56d9af5acba.png)
 
-When [12] was written in 2014, a successful hash would have needed to start with 17 zeros, meaning just one out of 1.4x10<sup>20</sup> hashes would be successful. Finding such a hash would be more difficult than finding a particular grain of sand out of all the grains of sand on Earth [12]. Today, at the time of writing it is even harder as the latest recorded Bitcoin block (shown below) had a target hash consisting of 20 leading zeros and a difficulty level of about 21.866 trillion [13].
+When [12] was written in 2014, a successful hash would have needed to start with 17 zeros, meaning just one out of 1.4x10<sup>20</sup> hashes would be successful. Finding such a hash would be more difficult than finding a particular grain of sand out of all the grains of sand on Earth [12]. Today, at the time of writing it is even harder as the latest recorded Bitcoin block had a target hash consisting of 20 leading zeros and a difficulty level of about 21.866 trillion [13].
 
 ```
 00000000000000000000edfc2d32a0d6302c200b34d195afa1588d4f61789e5a
