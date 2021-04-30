@@ -25,11 +25,11 @@ $ tree -P *.[ch]
     └── test_sha512.c
 ```
 
-| File(s)               | Description               |
+| Files                 | Description               |
 | --------------------- | ------------------------- |
 | `src/main.[ch]`       | Main program entry point. |
 | `src/sha512.[ch]`     | SHA-512 implementation.   |
-| `src/utils.[ch]`      | Utilty functions.         |
+| `src/utils.[ch]`      | Utility functions.        |
 | `tests/test_sha512.c` | Test entry point.         |
 | `tests/files`         | Test resource files.      |
 
@@ -63,7 +63,7 @@ $ ./sha512 FILE [OPTIONS]
 | `-c, --compare <file>` | Compare another file's hash against the input file's. |
 | `-v, --verify <hash>`  | Verify the input file has the given hash.             |
 
-#### Example
+#### Example Output
 
 ```sh
 $ ./sha512 input.txt
@@ -117,11 +117,11 @@ As a result of this property, hash functions like SHA-512 have found important a
 
 ### _Why can't we reverse the SHA512 algorithm to retrieve the original message from a hash digest?_
 
-One of the main distinctions between hashing and encryption is reversibility. Encryption algorithms typically require both an input as well as a key in order to generate the output (or ciphertext). This process is reversible as anyone able to obtain the key will also be able to decrypt the ciphertext and thereby view the original message [5]. In contrast, SHA-512, like all algorithms specified in NIST FIPS 180-4 are "one-way hash functions" [6]. It is therefore not required for the specific hash algorithm used to be kept secret because the digest cannot be converted back to its original form [5]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, the original message can still be retrieved as hash algorithms like SHA-512 are susceptible to _collisions_ – where two messages produce the same hash.
+One of the main distinctions between hashing and encryption is reversibility. Encryption algorithms typically require both an input as well as a key in order to generate the output (or ciphertext). This process is reversible as anyone able to obtain the key will also be able to decrypt the ciphertext and thereby view the original message [5]. In contrast, SHA-512, like all algorithms specified in NIST FIPS 180-4 are "one-way hash functions" [6]. It is therefore not required for the specific hash algorithm used to be kept secret because the digest cannot be converted back to its original form [5]. However, while it is not technically possible to reverse a hash in order to retrieve the original message, the original message may still be retrieved as hash algorithms like SHA-512 are susceptible to _collisions_ – where two messages produce the same hash.
 
-A central characteristic of any secure hash function is that of "preimage resistance", also referred to as "one-wayness". This means that for any given hash, it must be computationally infeasible to find a message that will produce the same hash output [2]. Meanwhile, a second property of hash functions is that of "second preimage resistance", also referred to as (weak) collision resistance. This means that for hash algorithms like SHA-512, it should be infeasible to create two distinct plaintext messages that produce the exact same digest [2]. These are crucial characteristics of hash algorithms as they are widely used for verifying digital files and deriving cryptographic keys. If a bad actor were able to feasibly construct a message that produces the same hash output as a given file, they could perform substitution attacks, replacing the file with another malicious file that produces the same digest [2].
+A central characteristic of any secure hash function is that of "preimage resistance", also referred to as "one-wayness". This means that for any given hash, it must be computationally infeasible to find a message that will produce the same hash output [2]. Meanwhile, a second property of hash functions is that of "second preimage resistance", also referred to as (weak) collision resistance. This means that for hash algorithms like SHA-512, it should be infeasible to create two distinct plaintext messages that produce the exact same digest [2]. These are both crucial characteristics of hash algorithms, as they are widely used for verifying digital files. If a bad actor were able to feasibly construct a message that produces the same hash output as a given file, they could perform substitution attacks, replacing the file with another malicious file that produces the same digest [2].
 
-It is not possible to design a hash function that is fully resistant to collisions. This is because the input to a hash function is theoretically infinite, while the digest will always be the same length. For this reason, it must be true that multiple inputs will inevitably produce the same hash value [2]. This is illustrated by the _Pigeonhole Principle_, which states that if a pigeon loop were to contain 100 birds but only 99 holes, at least one hole must be occupied by two birds [2]. Because every hash algorithm produces an output with a fixed number of bits (**_n_**), there are 2<sup>_n_</sup> possible digests that can be computed by that algorithm, while there is an infinite number of possible inputs [2] (in the case of SHA-512 there are 2<sup>512</sup> possible outputs). In other words, there are an infinite number of possible inputs that can produce the same output. Because of this, even given unlimited computing power it is not possible to retrieve the _exact_ message that produced a given hash value as there are so many inputs that could produce the same hash [1]. It would of course be possible to determine _some_ possible messages that produce that hash (i.e. collisions), given enough time and resources, but it would not be possible to determine precisely what input was fed to the algorithm originally [1].
+It is not possible to design a hash function that is fully resistant to collisions. This is because the input to a hash function is theoretically infinite, while the digest will always be the same length. For this reason, it must be true that multiple inputs will inevitably produce the same hash value [2]. This is illustrated by the _Pigeonhole Principle_, which states that if a pigeon loop were to contain 100 birds but only 99 holes, at least one of the holes must be occupied by two birds [2]. Because every hash algorithm produces an output with a fixed number of bits (**_n_**), there are 2<sup>_n_</sup> possible digests that can be computed by that algorithm, while there is an infinite number of possible inputs [2] (in the case of SHA-512 there are 2<sup>512</sup> possible outputs). In other words, there are an infinite number of possible inputs that can produce the same output. Because of this, even given unlimited computing power it is not possible to retrieve the _exact_ message that produced a given hash value as there are so many inputs that could produce the same hash [1]. It would of course be possible to determine _some_ possible messages that produce that hash (i.e. collisions), given enough time and resources, but it would not be possible to determine precisely what input was fed to the algorithm originally [1].
 
 ### _Can you design an algorithm that, given enough time, will find input messages that give each of the possible 512-bit strings?_
 
@@ -161,7 +161,7 @@ In the code below, the `for` loop (in which the `find_preimage()` function is ca
 
 int main(void)
 {
-    // Array of all SHA-512 output strings
+    // Array of all SHA-512 output strings (shortened for brevity)
     char* targets[] = {
         "0000...",
         // ......,
