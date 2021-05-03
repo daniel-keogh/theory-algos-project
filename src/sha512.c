@@ -78,8 +78,8 @@ int next_block(FILE* file, union Block* M, enum Status* S, Word* numBits)
         numBytes = fread(M->bytes, 1, BLOCK_SIZE, file);    // Read 128 bytes from the input file
         *numBits = *numBits + (BYTE_SIZE * numBytes);       // Calculate the total bits read so far
 
-        if (numBytes == 0) {
-            return -1;  // Failed to read any bytes
+        if (numBytes == 0 && *numBits == 0) {
+            return -1;  // Failed to read any bytes from the file
         }
         else if (numBytes == BLOCK_SIZE) {
             // Do nothing
