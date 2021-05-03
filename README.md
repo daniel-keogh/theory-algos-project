@@ -81,7 +81,6 @@ To install the executable for system-wide use, you could run:
 ```sh
 $ make
 $ sudo make install
-cp sha512 /usr/local/bin/
 ```
 
 #### Uninstalling
@@ -90,12 +89,11 @@ Alternatively to uninstall, run the following:
 
 ```sh
 $ sudo make uninstall
-rm /usr/local/bin/sha512
 ```
 
 ## Testing
 
-Tests are located in the `tests/` directory and can be compiled & run as follows:
+Tests are located in the `tests/` directory and can be compiled & executed by running the following command from the repository's root:
 
 ```sh
 $ make test
